@@ -9,7 +9,7 @@
 - **备选**: `FZYaSongT-R-GB.woff` 或 `FZYaSongT-R-GB.ttf`
 - **用途**: 签文显示
 
-### 2. 方正书宋繁体 (FZYaSongS-R-GB)
+### 2. 方正标雅宋简体 (FZYaSongS-R-GB)
 - **文件名**: `FZYaSongS-R-GB.woff2` (推荐)
 - **备选**: `FZYaSongS-R-GB.woff` 或 `FZYaSongS-R-GB.ttf`
 - **用途**: 宜忌、幸运信息、温馨提醒显示
