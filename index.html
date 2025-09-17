@@ -405,7 +405,7 @@
             if (file && file.type.startsWith('image/')) {
                 selectedFile = file;
                 showPreview(file);
-                showGenerateButton();
+                analyzeImageAndGenerate(file);
             }
         }
 
@@ -429,9 +429,39 @@
                 if (file.type.startsWith('image/')) {
                     selectedFile = file;
                     showPreview(file);
-                    showGenerateButton();
+                    analyzeImageAndGenerate(file);
                 }
             }
+        }
+
+        // 分析图片并生成日签
+        function analyzeImageAndGenerate(file) {
+            const img = new Image();
+            img.onload = function() {
+                // 创建canvas来分析图片颜色
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // 绘制图片到canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // 获取图片数据
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // 分析主色调
+                const dominantColor = analyzeImageColor(imageData);
+                console.log('分析到的主色调:', dominantColor);
+                
+                // 生成日签结果
+                omikujiResult = generateOmikujiResult(dominantColor);
+                
+                // 显示生成按钮
+                showGenerateButton();
+            };
+            
+            img.src = URL.createObjectURL(file);
         }
 
         // 显示预览
@@ -458,10 +488,8 @@
             
             showLoading();
             
-            // 模拟颜色识别
+            // 直接使用已分析的颜色生成图片
             setTimeout(async () => {
-                const luckyColor = getRandomColor();
-                omikujiResult = generateOmikujiResult(luckyColor);
                 await generateImage();
             }, 2000);
         }
@@ -476,6 +504,123 @@
         function getRandomColor() {
             const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉"];
             return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // RGB转HSL
+        function rgbToHsl(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0; // 无色
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            
+            return [h * 360, s * 100, l * 100];
+        }
+
+        // 分析图片主色调 - 优化版HSL色彩空间
+        function analyzeImageColor(imageData) {
+            const data = imageData.data;
+            const colorCounts = {};
+            const sampleSize = 2000; // 增加采样点数量
+            
+            // 分层采样：中心区域权重更高
+            const width = imageData.width;
+            const height = imageData.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            for (let i = 0; i < sampleSize; i++) {
+                let x, y;
+                
+                // 70%概率采样中心区域，30%概率采样边缘
+                if (Math.random() < 0.7) {
+                    // 中心区域采样
+                    x = Math.floor(centerX + (Math.random() - 0.5) * width * 0.6);
+                    y = Math.floor(centerY + (Math.random() - 0.5) * height * 0.6);
+                } else {
+                    // 全图随机采样
+                    x = Math.floor(Math.random() * width);
+                    y = Math.floor(Math.random() * height);
+                }
+                
+                const index = (y * width + x) * 4;
+                const r = data[index];
+                const g = data[index + 1];
+                const b = data[index + 2];
+                const a = data[index + 3];
+                
+                // 跳过透明像素和过暗像素
+                if (a < 128 || (r < 30 && g < 30 && b < 30)) continue;
+                
+                // 转换为HSL
+                const [h, s, l] = rgbToHsl(r, g, b);
+                
+                // 优化颜色判断逻辑
+                let colorName = "白";
+                
+                // 极低亮度 = 黑色
+                if (l < 10) {
+                    colorName = "黑";
+                }
+                // 低饱和度 = 白色/灰色
+                else if (s < 15) {
+                    colorName = l > 60 ? "白" : "黑";
+                }
+                // 高亮度低饱和度 = 白色
+                else if (l > 80 && s < 30) {
+                    colorName = "白";
+                }
+                // 根据色相判断颜色（调整阈值）
+                else if (h >= 0 && h < 20) colorName = "红";
+                else if (h >= 20 && h < 50) colorName = "橙";
+                else if (h >= 50 && h < 80) colorName = "黄";
+                else if (h >= 80 && h < 160) colorName = "绿";
+                else if (h >= 160 && h < 200) colorName = "青";
+                else if (h >= 200 && h < 260) colorName = "蓝";
+                else if (h >= 260 && h < 300) colorName = "紫";
+                else if (h >= 300 && h < 340) colorName = "粉";
+                else colorName = "红"; // 340-360度回到红色
+                
+                colorCounts[colorName] = (colorCounts[colorName] || 0) + 1;
+            }
+            
+            // 找到出现次数最多的颜色
+            let maxCount = 0;
+            let dominantColor = "白";
+            for (const [color, count] of Object.entries(colorCounts)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    dominantColor = color;
+                }
+            }
+            
+            // 如果采样点太少，使用备用方案
+            if (maxCount < 10) {
+                console.log('采样点不足，使用随机颜色');
+                const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉"];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            console.log('HSL颜色分析结果:', colorCounts);
+            console.log('主色调:', dominantColor, `(出现${maxCount}次)`);
+            
+            return dominantColor;
         }
 
         // 生成占卜结果
@@ -504,6 +649,18 @@
         function loadFonts() {
             return new Promise((resolve) => {
                 if (document.fonts) {
+                    // 检查字体是否已加载
+                    const checkFontLoaded = (fontFamily) => {
+                        return document.fonts.check(`16px ${fontFamily}`);
+                    };
+                    
+                    // 如果字体已加载，直接返回
+                    if (checkFontLoaded('FZYaSongT-R-GB') && checkFontLoaded('FZYaSongS-R-GB')) {
+                        console.log('字体已加载');
+                        resolve();
+                        return;
+                    }
+                    
                     // 预加载字体
                     const fontPromises = [
                         document.fonts.load('24px FZYaSongT-R-GB'),
@@ -514,13 +671,14 @@
                     Promise.all(fontPromises).then(() => {
                         console.log('所有字体加载完成');
                         resolve();
-                    }).catch(() => {
-                        console.log('字体加载失败，使用备用方案');
-                        setTimeout(resolve, 2000);
+                    }).catch((error) => {
+                        console.log('字体加载失败，使用备用方案:', error);
+                        setTimeout(resolve, 3000);
                     });
                 } else {
                     // 备用方案
-                    setTimeout(resolve, 2000);
+                    console.log('document.fonts 不支持，使用备用方案');
+                    setTimeout(resolve, 3000);
                 }
             });
         }
@@ -610,7 +768,7 @@
                 ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16);
                 
                 // 幸运地 - 根据SVG灰色框 (152, 714, 33, 23) 左上角开始
-                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 16);
+                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18);
                 
                 // 绘制温馨提醒（根据您提供的位置，去掉前缀）
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
