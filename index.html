@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谷语日签 - 娃包轻陪伴OC</title>
+    <style>
+        @font-face {
+            font-family: 'FZYaSongT-R-GB';
+            src: local('FZYaSongT-R-GB'), 
+                 local('方正标雅宋繁体'),
+                 url('fonts/FZYaSongT-R-GB.woff2') format('woff2'),
+                 url('fonts/FZYaSongT-R-GB.woff') format('woff'),
+                 url('fonts/FZYaSongT-R-GB.ttf') format('truetype');
+            font-display: swap;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .upload-area {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .upload-box {
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-box:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .upload-box.dragover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+
+        .upload-text {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            box-shadow: none;
+        }
+
+        .preview {
+            margin-top: 20px;
+        }
+
+        .preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            padding: 30px;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result-image {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+
+        .error {
+            background: #ffe6e6;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .upload-area {
+                padding: 30px 20px;
+            }
+            
+            .upload-box {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>谷语日签</h1>
+            <p>娃包轻陪伴OC</p>
+        </div>
+
+        <!-- 上传区域 -->
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-box" id="uploadBox">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">点击选择图片或拖拽到此处</div>
+                <input type="file" id="fileInput" class="file-input" accept="image/*">
+                <button class="btn" onclick="document.getElementById('fileInput').click()">
+                    选择图片
+                </button>
+            </div>
+            
+            <div class="preview" id="preview"></div>
+            
+            <button class="btn" id="generateBtn" onclick="generateOmikuji()" style="display: none;">
+                生成日签
+            </button>
+            
+            <button class="btn btn-secondary" id="resetBtn" onclick="resetUpload()" style="display: none;">
+                重新选择
+            </button>
+        </div>
+
+        <!-- 加载中 -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3>正在生成日签...</h3>
+            <p>请稍候，正在处理您的图片</p>
+        </div>
+
+        <!-- 结果展示 -->
+        <div class="result" id="result">
+            <img id="resultImage" class="result-image" alt="生成的日签">
+            
+            
+            <button class="btn" onclick="downloadImage()">
+                保存图片
+            </button>
+            
+            <button class="btn btn-secondary" onclick="resetUpload()">
+                重新生成
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let selectedFile = null;
+        let generatedImage = null;
+        let omikujiResult = null;
+
+
+        // 词库数据
+        const wordBank = {
+            "grade": ["大吉"],
+            "yi": [
+                "早排队","轻装上","二巡逛","补水站","打卡点","合照礼",
+                "穿舒鞋","带充电","贴防磨","防晒伞","备雨具","小零钱",
+                "贴名牌","存行李","先外圈","看指引","排队距","避尖峰",
+                "先吃饭","善让路","主动问","温声语","帮拍照","收票据",
+                "换轻包","护道具","拉拉链","先试灯","记摊号","备湿巾",
+                "换口罩","回收袋","防走失","约集合","轻取物","先观景",
+                "随手递","礼貌退","多微笑","适时休",
+                "看场刊","按动线","标返图","扩列礼","护假发","收印章",
+                "避反光","关闪光","留空道","让后排"
+            ],
+            "ji": [
+                "久久站","忘充电","硬抢位","大包裹","空腹逛",
+                "插队抢","大声吵","乱拍摄","未同意","挤压人",
+                "掉垃圾","撞道具","踩裙摆","追着拍","久不水",
+                "过度晒","穿新鞋","拖地裙","紧跟拍","堵通道",
+                "占座久","闪灯猛","拉他人","乱贴签","丢票证",
+                "放随地","喝太少","负重多","推搡人","乱翻包",
+                "未排队","越护栏","醉酒逛","逼合照","硬借物",
+                "乱扩列","开闪光","挡通道","贴人拍","踩道具",
+                "乱盖章","挡摊位","占机位"
+            ],
+            "lucky_items": ["打卡棒","袋子"],
+            "omikuji": [
+                "念念不忘 必有回响",
+                "早到不急 好位自留",
+                "灯牌作月 出片更稳",
+                "二巡有缘 漏网入袋",
+                "场刊在手 方向自明",
+                "礼貌先行 缘分靠近",
+                "先问后拍 出片自来",
+                "扩列顺利 朋友常伴",
+                "正片有期 返图如约",
+                "谷子到手 心满意足",
+                "吧唧叮当 欧气护体",
+                "痛包闪亮 人海发光",
+                "错峰而行 脚步轻快",
+                "排队有序 欧气靠近",
+                "轻装上阵 风生水起",
+                "集章集友 快乐加倍",
+                "返场小聚 好运加倍",
+                "外场微风 照片生花",
+                "温声相待 好事上门",
+                "迷路不慌 原地等友",
+                "饮水及时 体力常青",
+                "远光作伴 影像生辉",
+                "指南在手 动线明晰",
+                "合照微笑 记得致谢",
+                "护好假发 细节在线",
+                "挂件稳固 痛包安心",
+                "收纳有术 战利满袋",
+                "今日顺心 万事胜意",
+                "云开见你 福添一层",
+                "心有热爱 宇宙回响",
+                "灯火可亲 笑脸常新"
+            ],
+            "warm_tips": [
+                "错峰二巡更轻松",
+                "灯牌补光更通透",
+                "排队留间距就好",
+                "合照有礼更好看",
+                "痛包挂牢更安心",
+                "吧唧套壳不刮花",
+                "先吃再逛更耐久",
+                "票证收好更省心",
+                "集章慢慢盖不着急",
+                "扩列自我介绍先",
+                "喜欢就表达试试",
+                "喝水休息更有劲",
+                "远光侧身更通透",
+                "指南在手更踏实"
+            ]
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBox = document.getElementById('uploadBox');
+            
+            // 文件选择事件
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // 拖拽事件
+            uploadBox.addEventListener('dragover', handleDragOver);
+            uploadBox.addEventListener('dragleave', handleDragLeave);
+            uploadBox.addEventListener('drop', handleDrop);
+        });
+
+        // 处理文件选择
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                selectedFile = file;
+                showPreview(file);
+                showGenerateButton();
+            }
+        }
+
+        // 处理拖拽
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    selectedFile = file;
+                    showPreview(file);
+                    showGenerateButton();
+                }
+            }
+        }
+
+        // 显示预览
+        function showPreview(file) {
+            const preview = document.getElementById('preview');
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="预览图片">`;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // 显示生成按钮
+        function showGenerateButton() {
+            document.getElementById('generateBtn').style.display = 'block';
+            document.getElementById('resetBtn').style.display = 'block';
+        }
+
+        // 生成占卜结果
+        function generateOmikuji() {
+            if (!selectedFile) return;
+            
+            showLoading();
+            
+            // 模拟颜色识别
+            setTimeout(async () => {
+                const luckyColor = getRandomColor();
+                omikujiResult = generateOmikujiResult(luckyColor);
+                await generateImage();
+            }, 2000);
+        }
+
+        // 显示加载中
+        function showLoading() {
+            document.getElementById('uploadArea').classList.add('hidden');
+            document.getElementById('loading').classList.add('show');
+        }
+
+        // 获取随机颜色
+        function getRandomColor() {
+            const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉"];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // 生成占卜结果
+        function generateOmikujiResult(luckyColor) {
+            const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            const randomChoices = (arr, count) => {
+                const shuffled = [...arr].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, count);
+            };
+            
+            return {
+                grade: wordBank.grade[0],
+                lucky_color: luckyColor,
+                yi: randomChoices(wordBank.yi, 3),
+                ji: randomChoices(wordBank.ji, 3),
+                lucky_item: randomChoice(wordBank.lucky_items),
+                lucky_place: "CP会场·谷语摊位",
+                omikuji_text: randomChoice(wordBank.omikuji),
+                warm_tip: randomChoice(wordBank.warm_tips)
+            };
+        }
+
+        // 生成图片
+        // 字体加载检测
+        function loadFonts() {
+            return new Promise((resolve) => {
+                if (document.fonts) {
+                    document.fonts.ready.then(() => {
+                        resolve();
+                    });
+                } else {
+                    // 备用方案
+                    setTimeout(resolve, 1000);
+                }
+            });
+        }
+
+        async function generateImage() {
+            // 等待字体加载完成
+            await loadFonts();
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置画布尺寸为600x800（匹配SVG模板）
+            canvas.width = 600;
+            canvas.height = 800;
+            
+            // 随机选择模板
+            const templates = [
+                'public/定稿1（for 前端）.svg',
+                'public/定稿2（for 前端）.svg'
+            ];
+            const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+            console.log('使用模板:', randomTemplate); // 调试信息
+            
+            // 创建SVG图像
+            const svgImg = new Image();
+            svgImg.onload = function() {
+                // 绘制SVG背景
+                ctx.drawImage(svgImg, 0, 0, 600, 800);
+                
+                // 绘制宜忌内容（根据SVG灰色框精确位置）
+                ctx.font = '20px FZYaSongS-R-GB, serif';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#000';
+                
+                // 限制宜忌文本长度不超过150像素
+                let yiText = omikujiResult.yi.join(' ');
+                let jiText = omikujiResult.ji.join(' ');
+                
+                // 设置宜忌文字样式
+                ctx.font = '20px FZYaSongS-R-GB, serif';
+                
+                // 宜内容 - 只显示两个三字短语，增加间距
+                const yiPhrases = yiText.split(' ').slice(0, 2);
+                const yiDisplay = yiPhrases.join('  '); // 两个空格增加间距
+                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20); // 再往右调整2像素
+                
+                // 忌内容 - 只显示两个三字短语，增加间距
+                const jiPhrases = jiText.split(' ').slice(0, 2);
+                const jiDisplay = jiPhrases.join('  '); // 两个空格增加间距
+                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20); // 再往右调整2像素
+                
+                // 绘制幸运信息（根据SVG灰色框左上角位置，只显示内容）
+                ctx.font = '16px FZYaSongS-R-GB, serif';
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#696969';
+                
+                // 幸运色 - 根据SVG灰色框 (152, 660, 33, 23) 左上角开始
+                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16);
+                
+                // 幸运物 - 根据SVG灰色框 (152, 687, 33, 23) 左上角开始
+                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16);
+                
+                // 幸运地 - 根据SVG灰色框 (152, 714, 33, 23) 左上角开始
+                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 16);
+                
+                // 绘制温馨提醒（根据您提供的位置，去掉前缀）
+                ctx.font = '20px FZYaSongS-R-GB, serif';
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#000';
+                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20);
+                
+                // 绘制签文（根据SVG灰色框左上角位置，竖向排列，文字正着）
+                ctx.font = '24px FZYaSongT-R-GB'; // 方正标雅宋繁体
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#000';
+                
+                const omikujiText = omikujiResult.omikuji_text;
+                const charHeight = 25; // 根据灰色框高度261/字符数调整
+                // 根据SVG灰色框 (487, 477, 26, 261) 调整位置
+                const startX = 487 + 10; // 往左调整
+                const startY = 477 + 30; // 往下调整
+                
+                // 从上到下垂直排列，每个字都是正立的
+                for (let i = 0; i < omikujiText.length; i++) {
+                    const char = omikujiText[i];
+                    if (char && char !== ' ') {
+                        ctx.save();
+                        // 直接从上到下排列，不旋转
+                        ctx.translate(startX, startY + i * charHeight);
+                        ctx.fillText(char, 0, 0);
+                        ctx.restore();
+                    }
+                }
+                
+                
+                // 转换为图片
+                generatedImage = canvas.toDataURL('image/png', 1.0);
+                showResult();
+            };
+            
+            // 加载SVG模板
+            svgImg.src = randomTemplate;
+        }
+
+        // 显示结果
+        function showResult() {
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('result').classList.add('show');
+            
+            // 显示结果图片
+            document.getElementById('resultImage').src = generatedImage;
+            
+        }
+
+        // 下载图片
+        function downloadImage() {
+            if (generatedImage) {
+                const link = document.createElement('a');
+                link.download = `谷语日签-${omikujiResult.lucky_color}.png`;
+                link.href = generatedImage;
+                link.click();
+            }
+        }
+
+        // 重置上传
+        function resetUpload() {
+            selectedFile = null;
+            generatedImage = null;
+            omikujiResult = null;
+            
+            document.getElementById('fileInput').value = '';
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('generateBtn').style.display = 'none';
+            document.getElementById('resetBtn').style.display = 'none';
+            document.getElementById('uploadArea').classList.remove('hidden');
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('result').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
