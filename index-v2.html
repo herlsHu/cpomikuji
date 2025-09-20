@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谷语日签 - 娃包轻陪伴OC v2</title>
+    
+    <!-- 字体预加载 -->
+    <link rel="preload" href="fonts/方正标雅宋繁体.TTF" as="font" type="font/truetype" crossorigin>
+    <link rel="preload" href="fonts/方正标雅宋简体.TTF" as="font" type="font/truetype" crossorigin>
+    
+    <style>
+        @font-face {
+            font-family: 'FZYaSongT-R-GB';
+            src: url('fonts/方正标雅宋繁体.TTF') format('truetype'),
+                 local('FZYaSongT-R-GB'), 
+                 local('方正标雅宋繁体');
+            font-display: block;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'FZYaSongS-R-GB';
+            src: url('fonts/方正标雅宋简体.TTF') format('truetype'),
+                 local('FZYaSongS-R-GB'),
+                 local('方正标雅宋简体');
+            font-display: block;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        .font-fallback {
+            font-family: 'FZYaSongT-R-GB', 'Source Han Serif SC', '思源宋体', 'Noto Serif SC', 'STSong', '宋体', serif;
+        }
+        
+        .font-fallback-sans {
+            font-family: 'FZYaSongS-R-GB', 'Source Han Serif SC', '思源宋体', 'Noto Serif SC', 'STSong', '宋体', serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* 四宫格布局 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 600px;
+            border: 2px solid #333;
+        }
+
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: white;
+            border: 1px solid #ddd;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .grid-item:hover {
+            background: #f8f9fa;
+        }
+
+        /* 交互触发环节 - 左上角 */
+        .trigger-section {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .upload-area {
+            width: 100%;
+            text-align: center;
+        }
+
+        .upload-box {
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-box:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .upload-box.dragover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .upload-text {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview {
+            margin-top: 15px;
+        }
+
+        .preview img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 交互引导环节 - 右上角 */
+        .guide-section {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .guide-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff6b6b;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .guide-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .guide-item h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .guide-item p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .guide-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        /* 引导等待环节 - 左下角 */
+        .waiting-section {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .waiting-content {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .waiting-content.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .waiting-text {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* 结果获取环节 - 右下角 */
+        .result-section {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .result-content {
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result-content.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-image {
+            width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+            object-fit: contain;
+        }
+
+        .gift-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .gift-info h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+                height: auto;
+            }
+            
+            .grid-item {
+                min-height: 200px;
+            }
+            
+            .trigger-section {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            
+            .guide-section {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            
+            .waiting-section {
+                grid-column: 1;
+                grid-row: 3;
+            }
+            
+            .result-section {
+                grid-column: 1;
+                grid-row: 4;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>谷语日签</h1>
+            <p>娃包轻陪伴OC v2</p>
+        </div>
+
+        <!-- 四宫格布局 -->
+        <div class="grid-container">
+            <!-- 1. 交互触发环节 - 左上角 -->
+            <div class="grid-item trigger-section">
+                <div class="upload-area">
+                    <div class="upload-box" id="uploadBox">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">点击选择图片或拖拽到此处</div>
+                        <input type="file" id="fileInput" class="file-input" accept="image/*">
+                        <button class="btn" onclick="document.getElementById('fileInput').click()">
+                            选择图片
+                        </button>
+                    </div>
+                    
+                    <div class="preview" id="preview"></div>
+                    
+                    <button class="btn" id="startBtn" onclick="startOmikuji()" style="display: none;">
+                        开始抽取日签
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. 交互引导环节 - 右上角 -->
+            <div class="grid-item guide-section">
+                <div class="guide-item" id="guideItem1">
+                    <div class="guide-icon">🎒</div>
+                    <h3>放置娃包</h3>
+                    <p>请将您的娃包轻轻放置在指定区域，确保包内物品安全，拉链拉好，避免贵重物品掉落。</p>
+                </div>
+                
+                <div class="guide-item" id="guideItem2">
+                    <div class="guide-icon">👤</div>
+                    <h3>站立位置</h3>
+                    <p>请站在指定位置，保持自然姿态，双手可以轻抚娃包，让我们的AI更好地感知您的今日运势。</p>
+                </div>
+            </div>
+
+            <!-- 3. 引导等待环节 - 左下角 -->
+            <div class="grid-item waiting-section">
+                <div class="waiting-content" id="waitingContent">
+                    <div class="spinner"></div>
+                    <div class="waiting-text">正在分析你的今日运势……</div>
+                </div>
+            </div>
+
+            <!-- 4. 结果获取环节 - 右下角 -->
+            <div class="grid-item result-section">
+                <div class="result-content" id="resultContent">
+                    <img id="resultImage" class="result-image" alt="生成的日签">
+                    
+                    <div class="gift-info">
+                        <h4>🎁 无料领取</h4>
+                        <p>恭喜您获得专属日签！<br>
+                        凭此日签可到谷语摊位领取精美无料一份<br>
+                        <strong>限量发放，先到先得！</strong></p>
+                    </div>
+                    
+                    <button class="btn" onclick="downloadImage()" style="margin-top: 15px;">
+                        保存日签
+                    </button>
+                    
+                    <button class="btn" onclick="resetAll()" style="background: #6c757d; margin-top: 10px;">
+                        重新抽取
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let selectedFile = null;
+        let generatedImage = null;
+        let omikujiResult = null;
+
+        // 词库数据（与原版相同）
+        const wordBank = {
+            "grade": ["大吉"],
+            "yi": [
+                "早排队","轻装上","二巡逛","补水站","打卡点","合照礼",
+                "穿舒鞋","带充电","贴防磨","防晒伞","备雨具","小零钱",
+                "贴名牌","存行李","先外圈","看指引","排队距","避尖峰",
+                "先吃饭","善让路","主动问","温声语","帮拍照","收票据",
+                "换轻包","护道具","拉拉链","先试灯","记摊号","备湿巾",
+                "换口罩","回收袋","防走失","约集合","轻取物","先观景",
+                "随手递","礼貌退","多微笑","适时休",
+                "看场刊","按动线","标返图","扩列礼","护假发","收印章",
+                "避反光","关闪光","留空道","让后排"
+            ],
+            "ji": [
+                "久久站","忘充电","硬抢位","大包裹","空腹逛",
+                "插队抢","大声吵","乱拍摄","未同意","挤压人",
+                "掉垃圾","撞道具","踩裙摆","追着拍","久不水",
+                "过度晒","穿新鞋","拖地裙","紧跟拍","堵通道",
+                "占座久","闪灯猛","拉他人","乱贴签","丢票证",
+                "放随地","喝太少","负重多","推搡人","乱翻包",
+                "未排队","越护栏","醉酒逛","逼合照","硬借物",
+                "乱扩列","开闪光","挡通道","贴人拍","踩道具",
+                "乱盖章","挡摊位","占机位"
+            ],
+            "lucky_items": ["打卡棒","袋子"],
+            "omikuji": [
+                "念念不忘 必有回响",
+                "早到不急 好位自留",
+                "灯牌作月 出片更稳",
+                "二巡有缘 漏网入袋",
+                "场刊在手 方向自明",
+                "礼貌先行 缘分靠近",
+                "先问后拍 出片自来",
+                "扩列顺利 朋友常伴",
+                "正片有期 返图如约",
+                "谷子到手 心满意足",
+                "吧唧叮当 欧气护体",
+                "痛包闪亮 人海发光",
+                "错峰而行 脚步轻快",
+                "排队有序 欧气靠近",
+                "轻装上阵 风生水起",
+                "集章集友 快乐加倍",
+                "返场小聚 好运加倍",
+                "外场微风 照片生花",
+                "温声相待 好事上门",
+                "迷路不慌 原地等友",
+                "饮水及时 体力常青",
+                "远光作伴 影像生辉",
+                "指南在手 动线明晰",
+                "合照微笑 记得致谢",
+                "护好假发 细节在线",
+                "挂件稳固 痛包安心",
+                "收纳有术 战利满袋",
+                "今日顺心 万事胜意",
+                "云开见你 福添一层",
+                "心有热爱 宇宙回响",
+                "灯火可亲 笑脸常新"
+            ],
+            "warm_tips": [
+                "错峰二巡更轻松",
+                "灯牌补光更通透",
+                "排队留间距就好",
+                "合照有礼更好看",
+                "痛包挂牢更安心",
+                "吧唧套壳不刮花",
+                "先吃再逛更耐久",
+                "票证收好更省心",
+                "集章慢慢盖不着急",
+                "扩列自我介绍先",
+                "喜欢就表达试试",
+                "喝水休息更有劲",
+                "远光侧身更通透",
+                "指南在手更踏实"
+            ]
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBox = document.getElementById('uploadBox');
+            
+            // 文件选择事件
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // 拖拽事件
+            uploadBox.addEventListener('dragover', handleDragOver);
+            uploadBox.addEventListener('dragleave', handleDragLeave);
+            uploadBox.addEventListener('drop', handleDrop);
+        });
+
+        // 处理文件选择
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                selectedFile = file;
+                showPreview(file);
+                showStartButton();
+            }
+        }
+
+        // 处理拖拽
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    selectedFile = file;
+                    showPreview(file);
+                    showStartButton();
+                }
+            }
+        }
+
+        // 显示预览
+        function showPreview(file) {
+            const preview = document.getElementById('preview');
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="预览图片">`;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // 显示开始按钮
+        function showStartButton() {
+            document.getElementById('startBtn').style.display = 'block';
+        }
+
+        // 开始抽取日签
+        async function startOmikuji() {
+            if (!selectedFile) return;
+            
+            // 1. 显示引导环节
+            showGuideSection();
+            
+            // 2. 延迟显示等待环节
+            setTimeout(() => {
+                showWaitingSection();
+            }, 3000);
+            
+            // 3. 分析图片并生成日签
+            setTimeout(async () => {
+                await analyzeAndGenerate();
+            }, 5000);
+        }
+
+        // 显示引导环节
+        function showGuideSection() {
+            const guideItem1 = document.getElementById('guideItem1');
+            const guideItem2 = document.getElementById('guideItem2');
+            
+            // 依次显示引导内容
+            setTimeout(() => {
+                guideItem1.classList.add('show');
+            }, 500);
+            
+            setTimeout(() => {
+                guideItem2.classList.add('show');
+            }, 1500);
+        }
+
+        // 显示等待环节
+        function showWaitingSection() {
+            const waitingContent = document.getElementById('waitingContent');
+            waitingContent.classList.add('show');
+        }
+
+        // 分析图片并生成日签
+        async function analyzeAndGenerate() {
+            const img = new Image();
+            img.onload = function() {
+                // 创建canvas来分析图片颜色
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // 绘制图片到canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // 获取图片数据
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                // 分析主色调
+                const dominantColor = analyzeImageColor(imageData);
+                console.log('分析到的主色调:', dominantColor);
+                
+                // 生成日签结果
+                omikujiResult = generateOmikujiResult(dominantColor);
+                
+                // 生成日签图片
+                generateImage();
+            };
+            
+            img.src = URL.createObjectURL(selectedFile);
+        }
+
+        // RGB转HSL
+        function rgbToHsl(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            
+            return [h * 360, s * 100, l * 100];
+        }
+
+        // 分析图片主色调
+        function analyzeImageColor(imageData) {
+            const data = imageData.data;
+            const colorCounts = {};
+            const sampleSize = 2000;
+            
+            const width = imageData.width;
+            const height = imageData.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            for (let i = 0; i < sampleSize; i++) {
+                let x, y;
+                
+                if (Math.random() < 0.7) {
+                    x = Math.floor(centerX + (Math.random() - 0.5) * width * 0.6);
+                    y = Math.floor(centerY + (Math.random() - 0.5) * height * 0.6);
+                } else {
+                    x = Math.floor(Math.random() * width);
+                    y = Math.floor(Math.random() * height);
+                }
+                
+                const index = (y * width + x) * 4;
+                const r = data[index];
+                const g = data[index + 1];
+                const b = data[index + 2];
+                const a = data[index + 3];
+                
+                if (a < 128 || (r < 30 && g < 30 && b < 30)) continue;
+                
+                const [h, s, l] = rgbToHsl(r, g, b);
+                
+                let colorName = "白";
+                
+                if (l < 10) {
+                    colorName = "黑";
+                } else if (s < 15) {
+                    colorName = l > 60 ? "白" : "黑";
+                } else if (l > 80 && s < 30) {
+                    colorName = "白";
+                } else if (h >= 0 && h < 20) colorName = "红";
+                else if (h >= 20 && h < 50) colorName = "橙";
+                else if (h >= 50 && h < 80) colorName = "黄";
+                else if (h >= 80 && h < 160) colorName = "绿";
+                else if (h >= 160 && h < 200) colorName = "青";
+                else if (h >= 200 && h < 260) colorName = "蓝";
+                else if (h >= 260 && h < 300) colorName = "紫";
+                else if (h >= 300 && h < 340) colorName = "粉";
+                else colorName = "红";
+                
+                colorCounts[colorName] = (colorCounts[colorName] || 0) + 1;
+            }
+            
+            let maxCount = 0;
+            let dominantColor = "白";
+            for (const [color, count] of Object.entries(colorCounts)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    dominantColor = color;
+                }
+            }
+            
+            if (maxCount < 10) {
+                const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉"];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            return dominantColor;
+        }
+
+        // 生成占卜结果
+        function generateOmikujiResult(luckyColor) {
+            const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
+            const randomChoices = (arr, count) => {
+                const shuffled = [...arr].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, count);
+            };
+            
+            return {
+                grade: wordBank.grade[0],
+                lucky_color: luckyColor,
+                yi: randomChoices(wordBank.yi, 3),
+                ji: randomChoices(wordBank.ji, 3),
+                lucky_item: randomChoice(wordBank.lucky_items),
+                lucky_place: "CP会场·谷语摊位",
+                omikuji_text: randomChoice(wordBank.omikuji),
+                warm_tip: randomChoice(wordBank.warm_tips)
+            };
+        }
+
+        // 字体加载检测
+        function loadFonts() {
+            return new Promise((resolve) => {
+                if (document.fonts) {
+                    const checkFontLoaded = (fontFamily) => {
+                        return document.fonts.check(`16px ${fontFamily}`);
+                    };
+                    
+                    if (checkFontLoaded('FZYaSongT-R-GB') && checkFontLoaded('FZYaSongS-R-GB')) {
+                        resolve();
+                        return;
+                    }
+                    
+                    const fontPromises = [
+                        document.fonts.load('24px FZYaSongT-R-GB'),
+                        document.fonts.load('20px FZYaSongS-R-GB'),
+                        document.fonts.load('16px FZYaSongS-R-GB')
+                    ];
+                    
+                    Promise.all(fontPromises).then(() => {
+                        resolve();
+                    }).catch((error) => {
+                        console.log('字体加载失败，使用备用方案:', error);
+                        setTimeout(resolve, 3000);
+                    });
+                } else {
+                    setTimeout(resolve, 3000);
+                }
+            });
+        }
+
+        // 生成图片
+        async function generateImage() {
+            await loadFonts();
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 600;
+            canvas.height = 800;
+            
+            const templates = [
+                'public/定稿1（for 前端）.svg',
+                'public/定稿2（for 前端）.svg'
+            ];
+            const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+            
+            const svgImg = new Image();
+            svgImg.onload = function() {
+                ctx.drawImage(svgImg, 0, 0, 600, 800);
+                
+                // 绘制宜忌内容
+                ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#000';
+                
+                let yiText = omikujiResult.yi.join(' ');
+                let jiText = omikujiResult.ji.join(' ');
+                
+                const yiPhrases = yiText.split(' ').slice(0, 2);
+                const yiDisplay = yiPhrases.join('  ');
+                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20);
+                
+                const jiPhrases = jiText.split(' ').slice(0, 2);
+                const jiDisplay = jiPhrases.join('  ');
+                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20);
+                
+                // 绘制幸运信息
+                ctx.font = '16px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#696969';
+                
+                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16);
+                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16);
+                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18);
+                
+                // 绘制温馨提醒
+                ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#000';
+                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20);
+                
+                // 绘制签文
+                ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#000';
+                
+                const omikujiText = omikujiResult.omikuji_text;
+                const charHeight = 25;
+                const startX = 487 + 10;
+                const startY = 477 + 30;
+                
+                for (let i = 0; i < omikujiText.length; i++) {
+                    const char = omikujiText[i];
+                    if (char && char !== ' ') {
+                        ctx.save();
+                        ctx.translate(startX, startY + i * charHeight);
+                        ctx.fillText(char, 0, 0);
+                        ctx.restore();
+                    }
+                }
+                
+                generatedImage = canvas.toDataURL('image/png', 1.0);
+                showResult();
+            };
+            
+            svgImg.src = randomTemplate;
+        }
+
+        // 显示结果
+        function showResult() {
+            // 隐藏等待环节
+            document.getElementById('waitingContent').classList.remove('show');
+            
+            // 显示结果
+            const resultContent = document.getElementById('resultContent');
+            resultContent.classList.add('show');
+            document.getElementById('resultImage').src = generatedImage;
+        }
+
+        // 下载图片
+        function downloadImage() {
+            if (generatedImage) {
+                const link = document.createElement('a');
+                link.download = `谷语日签-${omikujiResult.lucky_color}.png`;
+                link.href = generatedImage;
+                link.click();
+            }
+        }
+
+        // 重置所有
+        function resetAll() {
+            selectedFile = null;
+            generatedImage = null;
+            omikujiResult = null;
+            
+            document.getElementById('fileInput').value = '';
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('guideItem1').classList.remove('show');
+            document.getElementById('guideItem2').classList.remove('show');
+            document.getElementById('waitingContent').classList.remove('show');
+            document.getElementById('resultContent').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
