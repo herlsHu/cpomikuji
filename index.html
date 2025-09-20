@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>谷语日签 - 娃包轻陪伴OC v2</title>
+    <title>谷语日签 - 娃包轻陪伴OC</title>
     
     <!-- 字体预加载 -->
     <link rel="preload" href="fonts/方正标雅宋繁体.TTF" as="font" type="font/truetype" crossorigin>
@@ -55,7 +55,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 500px;
             width: 100%;
             background: white;
             border-radius: 20px;
@@ -82,46 +82,23 @@
             opacity: 0.9;
         }
 
-        /* 四宫格布局 */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            height: 600px;
-            border: 2px solid #333;
+        .content {
+            padding: 40px 30px;
         }
 
-        .grid-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            background: white;
-            border: 1px solid #ddd;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .grid-item:hover {
-            background: #f8f9fa;
-        }
-
-        /* 交互触发环节 - 左上角 */
+        /* 1. 交互触发环节 */
         .trigger-section {
-            grid-column: 1;
-            grid-row: 1;
+            text-align: center;
         }
 
         .upload-area {
-            width: 100%;
-            text-align: center;
+            margin-bottom: 30px;
         }
 
         .upload-box {
             border: 2px dashed #ddd;
             border-radius: 15px;
-            padding: 30px 20px;
+            padding: 40px 20px;
             margin-bottom: 20px;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -140,14 +117,14 @@
 
         .upload-icon {
             font-size: 48px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: #ccc;
         }
 
         .upload-text {
             color: #666;
-            margin-bottom: 15px;
-            font-size: 14px;
+            margin-bottom: 20px;
+            font-size: 16px;
         }
 
         .file-input {
@@ -158,14 +135,14 @@
             background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px 30px;
             border-radius: 25px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .btn:hover {
@@ -180,27 +157,30 @@
         }
 
         .preview {
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .preview img {
             max-width: 100%;
-            max-height: 120px;
+            max-height: 200px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        /* 交互引导环节 - 右上角 */
+        /* 2. 交互引导环节 */
         .guide-section {
-            grid-column: 2;
-            grid-row: 1;
+            display: none;
+        }
+
+        .guide-section.show {
+            display: block;
         }
 
         .guide-item {
             background: #f8f9fa;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
             border-left: 4px solid #ff6b6b;
             opacity: 0;
             transform: translateY(20px);
@@ -214,38 +194,30 @@
 
         .guide-item h3 {
             color: #333;
-            font-size: 16px;
-            margin-bottom: 8px;
+            font-size: 18px;
+            margin-bottom: 10px;
             font-weight: bold;
         }
 
         .guide-item p {
             color: #666;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
         .guide-icon {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 15px;
         }
 
-        /* 引导等待环节 - 左下角 */
+        /* 3. 引导等待环节 */
         .waiting-section {
-            grid-column: 1;
-            grid-row: 2;
-        }
-
-        .waiting-content {
+            display: none;
             text-align: center;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.5s ease;
         }
 
-        .waiting-content.show {
-            opacity: 1;
-            transform: scale(1);
+        .waiting-section.show {
+            display: block;
         }
 
         .spinner {
@@ -264,52 +236,51 @@
         }
 
         .waiting-text {
-            font-size: 18px;
+            font-size: 20px;
             color: #333;
             font-weight: bold;
         }
 
-        /* 结果获取环节 - 右下角 */
+        /* 4. 结果获取环节 */
         .result-section {
-            grid-column: 2;
-            grid-row: 2;
+            display: none;
         }
 
-        .result-content {
-            width: 100%;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-
-        .result-content.show {
-            opacity: 1;
-            transform: translateY(0);
+        .result-section.show {
+            display: block;
         }
 
         .result-image {
             width: 100%;
-            max-height: 200px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            margin-bottom: 15px;
-            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
         }
 
         .gift-info {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
 
         .gift-info h4 {
-            font-size: 16px;
-            margin-bottom: 8px;
+            font-size: 18px;
+            margin-bottom: 10px;
             font-weight: bold;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
         }
 
         /* 隐藏类 */
@@ -318,35 +289,22 @@
         }
 
         /* 响应式设计 */
-        @media (max-width: 768px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto auto;
-                height: auto;
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
             }
             
-            .grid-item {
-                min-height: 200px;
+            .header {
+                padding: 20px 15px;
             }
             
-            .trigger-section {
-                grid-column: 1;
-                grid-row: 1;
+            .header h1 {
+                font-size: 24px;
             }
             
-            .guide-section {
-                grid-column: 1;
-                grid-row: 2;
-            }
-            
-            .waiting-section {
-                grid-column: 1;
-                grid-row: 3;
-            }
-            
-            .result-section {
-                grid-column: 1;
-                grid-row: 4;
+            .content {
+                padding: 30px 20px;
             }
         }
     </style>
@@ -356,13 +314,12 @@
         <!-- 头部 -->
         <div class="header">
             <h1>谷语日签</h1>
-            <p>娃包轻陪伴OC v2</p>
+            <p>娃包轻陪伴OC</p>
         </div>
 
-        <!-- 四宫格布局 -->
-        <div class="grid-container">
-            <!-- 1. 交互触发环节 - 左上角 -->
-            <div class="grid-item trigger-section">
+        <div class="content">
+            <!-- 1. 交互触发环节 -->
+            <div class="trigger-section" id="triggerSection">
                 <div class="upload-area">
                     <div class="upload-box" id="uploadBox">
                         <div class="upload-icon">📷</div>
@@ -381,49 +338,45 @@
                 </div>
             </div>
 
-            <!-- 2. 交互引导环节 - 右上角 -->
-            <div class="grid-item guide-section">
+            <!-- 2. 交互引导环节 -->
+            <div class="guide-section" id="guideSection">
                 <div class="guide-item" id="guideItem1">
                     <div class="guide-icon">🎒</div>
                     <h3>放置娃包</h3>
-                    <p>请将您的娃包轻轻放置在指定区域，确保包内物品安全，拉链拉好，避免贵重物品掉落。</p>
+                    <p>请将您的娃包轻轻放置在指定区域，确保包内物品安全，拉链拉好，避免贵重物品掉落。让我们的AI能够更好地感知您的今日运势。</p>
                 </div>
                 
                 <div class="guide-item" id="guideItem2">
                     <div class="guide-icon">👤</div>
                     <h3>站立位置</h3>
-                    <p>请站在指定位置，保持自然姿态，双手可以轻抚娃包，让我们的AI更好地感知您的今日运势。</p>
+                    <p>请站在指定位置，保持自然姿态，双手可以轻抚娃包，让我们的AI更好地感知您的今日运势和心情状态。</p>
                 </div>
             </div>
 
-            <!-- 3. 引导等待环节 - 左下角 -->
-            <div class="grid-item waiting-section">
-                <div class="waiting-content" id="waitingContent">
-                    <div class="spinner"></div>
-                    <div class="waiting-text">正在分析你的今日运势……</div>
-                </div>
+            <!-- 3. 引导等待环节 -->
+            <div class="waiting-section" id="waitingSection">
+                <div class="spinner"></div>
+                <div class="waiting-text">正在分析你的今日运势……</div>
             </div>
 
-            <!-- 4. 结果获取环节 - 右下角 -->
-            <div class="grid-item result-section">
-                <div class="result-content" id="resultContent">
-                    <img id="resultImage" class="result-image" alt="生成的日签">
-                    
-                    <div class="gift-info">
-                        <h4>🎁 无料领取</h4>
-                        <p>恭喜您获得专属日签！<br>
-                        凭此日签可到谷语摊位领取精美无料一份<br>
-                        <strong>限量发放，先到先得！</strong></p>
-                    </div>
-                    
-                    <button class="btn" onclick="downloadImage()" style="margin-top: 15px;">
-                        保存日签
-                    </button>
-                    
-                    <button class="btn" onclick="resetAll()" style="background: #6c757d; margin-top: 10px;">
-                        重新抽取
-                    </button>
+            <!-- 4. 结果获取环节 -->
+            <div class="result-section" id="resultSection">
+                <img id="resultImage" class="result-image" alt="生成的日签">
+                
+                <div class="gift-info">
+                    <h4>🎁 无料领取</h4>
+                    <p>恭喜您获得专属日签！<br>
+                    凭此日签可到谷语摊位领取精美无料一份<br>
+                    <strong>限量发放，先到先得！</strong></p>
                 </div>
+                
+                <button class="btn" onclick="downloadImage()">
+                    保存日签
+                </button>
+                
+                <button class="btn btn-secondary" onclick="resetAll()">
+                    重新抽取
+                </button>
             </div>
         </div>
     </div>
@@ -434,7 +387,7 @@
         let generatedImage = null;
         let omikujiResult = null;
 
-        // 词库数据（与原版相同）
+        // 词库数据
         const wordBank = {
             "grade": ["大吉"],
             "yi": [
@@ -581,39 +534,29 @@
         async function startOmikuji() {
             if (!selectedFile) return;
             
-            // 1. 显示引导环节
-            showGuideSection();
+            // 1. 隐藏触发环节，显示引导环节
+            document.getElementById('triggerSection').classList.add('hidden');
+            document.getElementById('guideSection').classList.add('show');
             
-            // 2. 延迟显示等待环节
+            // 2. 依次显示引导内容
             setTimeout(() => {
-                showWaitingSection();
-            }, 3000);
-            
-            // 3. 分析图片并生成日签
-            setTimeout(async () => {
-                await analyzeAndGenerate();
-            }, 5000);
-        }
-
-        // 显示引导环节
-        function showGuideSection() {
-            const guideItem1 = document.getElementById('guideItem1');
-            const guideItem2 = document.getElementById('guideItem2');
-            
-            // 依次显示引导内容
-            setTimeout(() => {
-                guideItem1.classList.add('show');
+                document.getElementById('guideItem1').classList.add('show');
             }, 500);
             
             setTimeout(() => {
-                guideItem2.classList.add('show');
-            }, 1500);
-        }
-
-        // 显示等待环节
-        function showWaitingSection() {
-            const waitingContent = document.getElementById('waitingContent');
-            waitingContent.classList.add('show');
+                document.getElementById('guideItem2').classList.add('show');
+            }, 2000);
+            
+            // 3. 延迟显示等待环节
+            setTimeout(() => {
+                document.getElementById('guideSection').classList.remove('show');
+                document.getElementById('waitingSection').classList.add('show');
+            }, 5000);
+            
+            // 4. 分析图片并生成日签
+            setTimeout(async () => {
+                await analyzeAndGenerate();
+            }, 8000);
         }
 
         // 分析图片并生成日签
@@ -875,11 +818,10 @@
         // 显示结果
         function showResult() {
             // 隐藏等待环节
-            document.getElementById('waitingContent').classList.remove('show');
+            document.getElementById('waitingSection').classList.remove('show');
             
             // 显示结果
-            const resultContent = document.getElementById('resultContent');
-            resultContent.classList.add('show');
+            document.getElementById('resultSection').classList.add('show');
             document.getElementById('resultImage').src = generatedImage;
         }
 
@@ -902,10 +844,12 @@
             document.getElementById('fileInput').value = '';
             document.getElementById('preview').innerHTML = '';
             document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('triggerSection').classList.remove('hidden');
+            document.getElementById('guideSection').classList.remove('show');
             document.getElementById('guideItem1').classList.remove('show');
             document.getElementById('guideItem2').classList.remove('show');
-            document.getElementById('waitingContent').classList.remove('show');
-            document.getElementById('resultContent').classList.remove('show');
+            document.getElementById('waitingSection').classList.remove('show');
+            document.getElementById('resultSection').classList.remove('show');
         }
     </script>
 </body>
