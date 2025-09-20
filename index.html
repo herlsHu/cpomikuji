@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>谷语日签 - 娃包轻陪伴OC</title>
+    <title>谷语日签 - 娃包轻陪伴OC v2</title>
     
     <!-- 字体预加载 -->
     <link rel="preload" href="fonts/方正标雅宋繁体.TTF" as="font" type="font/truetype" crossorigin>
@@ -15,7 +15,7 @@
             src: url('fonts/方正标雅宋繁体.TTF') format('truetype'),
                  local('FZYaSongT-R-GB'), 
                  local('方正标雅宋繁体');
-            font-display: block; /* 强制等待字体加载完成 */
+            font-display: block;
             font-weight: normal;
             font-style: normal;
         }
@@ -30,7 +30,6 @@
             font-style: normal;
         }
         
-        /* 字体回退方案 - 如果方正字体不可用，使用相似字体 */
         .font-fallback {
             font-family: 'FZYaSongT-R-GB', 'Source Han Serif SC', '思源宋体', 'Noto Serif SC', 'STSong', '宋体', serif;
         }
@@ -38,6 +37,7 @@
         .font-fallback-sans {
             font-family: 'FZYaSongS-R-GB', 'Source Han Serif SC', '思源宋体', 'Noto Serif SC', 'STSong', '宋体', serif;
         }
+        
         * {
             margin: 0;
             padding: 0;
@@ -55,7 +55,7 @@
         }
 
         .container {
-            max-width: 400px;
+            max-width: 800px;
             width: 100%;
             background: white;
             border-radius: 20px;
@@ -82,16 +82,47 @@
             opacity: 0.9;
         }
 
+        /* 四宫格布局 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 600px;
+            border: 2px solid #333;
+        }
+
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: white;
+            border: 1px solid #ddd;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .grid-item:hover {
+            background: #f8f9fa;
+        }
+
+        /* 交互触发环节 - 左上角 */
+        .trigger-section {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
         .upload-area {
-            padding: 40px 30px;
+            width: 100%;
             text-align: center;
         }
 
         .upload-box {
             border: 2px dashed #ddd;
             border-radius: 15px;
-            padding: 40px 20px;
-            margin-bottom: 30px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
             cursor: pointer;
         }
@@ -109,14 +140,14 @@
 
         .upload-icon {
             font-size: 48px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: #ccc;
         }
 
         .upload-text {
             color: #666;
-            margin-bottom: 20px;
-            font-size: 16px;
+            margin-bottom: 15px;
+            font-size: 14px;
         }
 
         .file-input {
@@ -127,14 +158,14 @@
             background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 12px 24px;
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .btn:hover {
@@ -148,40 +179,78 @@
             transform: none;
         }
 
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #666;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-            box-shadow: none;
-        }
-
         .preview {
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .preview img {
             max-width: 100%;
-            max-height: 200px;
+            max-height: 120px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
+        /* 交互引导环节 - 右上角 */
+        .guide-section {
+            grid-column: 2;
+            grid-row: 1;
         }
 
-        .loading.show {
-            display: block;
+        .guide-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff6b6b;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .guide-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .guide-item h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .guide-item p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .guide-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        /* 引导等待环节 - 左下角 */
+        .waiting-section {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .waiting-content {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .waiting-content.show {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 4px solid #f3f3f3;
             border-top: 4px solid #ff6b6b;
             border-radius: 50%;
@@ -194,57 +263,90 @@
             100% { transform: rotate(360deg); }
         }
 
-        .result {
-            display: none;
-            padding: 30px;
+        .waiting-text {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
         }
 
-        .result.show {
-            display: block;
+        /* 结果获取环节 - 右下角 */
+        .result-section {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .result-content {
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result-content.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .result-image {
             width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+            object-fit: contain;
         }
 
-
-        .error {
-            background: #ffe6e6;
-            color: #d63031;
+        .gift-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
+            border-radius: 12px;
             text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
+        .gift-info h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        /* 隐藏类 */
         .hidden {
             display: none !important;
         }
 
         /* 响应式设计 */
-        @media (max-width: 480px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+                height: auto;
             }
             
-            .header {
-                padding: 20px 15px;
+            .grid-item {
+                min-height: 200px;
             }
             
-            .header h1 {
-                font-size: 24px;
+            .trigger-section {
+                grid-column: 1;
+                grid-row: 1;
             }
             
-            .upload-area {
-                padding: 30px 20px;
+            .guide-section {
+                grid-column: 1;
+                grid-row: 2;
             }
             
-            .upload-box {
-                padding: 30px 15px;
+            .waiting-section {
+                grid-column: 1;
+                grid-row: 3;
+            }
+            
+            .result-section {
+                grid-column: 1;
+                grid-row: 4;
             }
         }
     </style>
@@ -254,50 +356,75 @@
         <!-- 头部 -->
         <div class="header">
             <h1>谷语日签</h1>
-            <p>娃包轻陪伴OC</p>
+            <p>娃包轻陪伴OC v2</p>
         </div>
 
-        <!-- 上传区域 -->
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-box" id="uploadBox">
-                <div class="upload-icon">📷</div>
-                <div class="upload-text">点击选择图片或拖拽到此处</div>
-                <input type="file" id="fileInput" class="file-input" accept="image/*">
-                <button class="btn" onclick="document.getElementById('fileInput').click()">
-                    选择图片
-                </button>
+        <!-- 四宫格布局 -->
+        <div class="grid-container">
+            <!-- 1. 交互触发环节 - 左上角 -->
+            <div class="grid-item trigger-section">
+                <div class="upload-area">
+                    <div class="upload-box" id="uploadBox">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">点击选择图片或拖拽到此处</div>
+                        <input type="file" id="fileInput" class="file-input" accept="image/*">
+                        <button class="btn" onclick="document.getElementById('fileInput').click()">
+                            选择图片
+                        </button>
+                    </div>
+                    
+                    <div class="preview" id="preview"></div>
+                    
+                    <button class="btn" id="startBtn" onclick="startOmikuji()" style="display: none;">
+                        开始抽取日签
+                    </button>
+                </div>
             </div>
-            
-            <div class="preview" id="preview"></div>
-            
-            <button class="btn" id="generateBtn" onclick="generateOmikuji()" style="display: none;">
-                生成日签
-            </button>
-            
-            <button class="btn btn-secondary" id="resetBtn" onclick="resetUpload()" style="display: none;">
-                重新选择
-            </button>
-        </div>
 
-        <!-- 加载中 -->
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <h3>正在生成日签...</h3>
-            <p>请稍候，正在处理您的图片</p>
-        </div>
+            <!-- 2. 交互引导环节 - 右上角 -->
+            <div class="grid-item guide-section">
+                <div class="guide-item" id="guideItem1">
+                    <div class="guide-icon">🎒</div>
+                    <h3>放置娃包</h3>
+                    <p>请将您的娃包轻轻放置在指定区域，确保包内物品安全，拉链拉好，避免贵重物品掉落。</p>
+                </div>
+                
+                <div class="guide-item" id="guideItem2">
+                    <div class="guide-icon">👤</div>
+                    <h3>站立位置</h3>
+                    <p>请站在指定位置，保持自然姿态，双手可以轻抚娃包，让我们的AI更好地感知您的今日运势。</p>
+                </div>
+            </div>
 
-        <!-- 结果展示 -->
-        <div class="result" id="result">
-            <img id="resultImage" class="result-image" alt="生成的日签">
-            
-            
-            <button class="btn" onclick="downloadImage()">
-                保存图片
-            </button>
-            
-            <button class="btn btn-secondary" onclick="resetUpload()">
-                重新生成
-            </button>
+            <!-- 3. 引导等待环节 - 左下角 -->
+            <div class="grid-item waiting-section">
+                <div class="waiting-content" id="waitingContent">
+                    <div class="spinner"></div>
+                    <div class="waiting-text">正在分析你的今日运势……</div>
+                </div>
+            </div>
+
+            <!-- 4. 结果获取环节 - 右下角 -->
+            <div class="grid-item result-section">
+                <div class="result-content" id="resultContent">
+                    <img id="resultImage" class="result-image" alt="生成的日签">
+                    
+                    <div class="gift-info">
+                        <h4>🎁 无料领取</h4>
+                        <p>恭喜您获得专属日签！<br>
+                        凭此日签可到谷语摊位领取精美无料一份<br>
+                        <strong>限量发放，先到先得！</strong></p>
+                    </div>
+                    
+                    <button class="btn" onclick="downloadImage()" style="margin-top: 15px;">
+                        保存日签
+                    </button>
+                    
+                    <button class="btn" onclick="resetAll()" style="background: #6c757d; margin-top: 10px;">
+                        重新抽取
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -307,8 +434,7 @@
         let generatedImage = null;
         let omikujiResult = null;
 
-
-        // 词库数据
+        // 词库数据（与原版相同）
         const wordBank = {
             "grade": ["大吉"],
             "yi": [
@@ -405,7 +531,7 @@
             if (file && file.type.startsWith('image/')) {
                 selectedFile = file;
                 showPreview(file);
-                analyzeImageAndGenerate(file);
+                showStartButton();
             }
         }
 
@@ -429,13 +555,69 @@
                 if (file.type.startsWith('image/')) {
                     selectedFile = file;
                     showPreview(file);
-                    analyzeImageAndGenerate(file);
+                    showStartButton();
                 }
             }
         }
 
+        // 显示预览
+        function showPreview(file) {
+            const preview = document.getElementById('preview');
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" alt="预览图片">`;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // 显示开始按钮
+        function showStartButton() {
+            document.getElementById('startBtn').style.display = 'block';
+        }
+
+        // 开始抽取日签
+        async function startOmikuji() {
+            if (!selectedFile) return;
+            
+            // 1. 显示引导环节
+            showGuideSection();
+            
+            // 2. 延迟显示等待环节
+            setTimeout(() => {
+                showWaitingSection();
+            }, 3000);
+            
+            // 3. 分析图片并生成日签
+            setTimeout(async () => {
+                await analyzeAndGenerate();
+            }, 5000);
+        }
+
+        // 显示引导环节
+        function showGuideSection() {
+            const guideItem1 = document.getElementById('guideItem1');
+            const guideItem2 = document.getElementById('guideItem2');
+            
+            // 依次显示引导内容
+            setTimeout(() => {
+                guideItem1.classList.add('show');
+            }, 500);
+            
+            setTimeout(() => {
+                guideItem2.classList.add('show');
+            }, 1500);
+        }
+
+        // 显示等待环节
+        function showWaitingSection() {
+            const waitingContent = document.getElementById('waitingContent');
+            waitingContent.classList.add('show');
+        }
+
         // 分析图片并生成日签
-        function analyzeImageAndGenerate(file) {
+        async function analyzeAndGenerate() {
             const img = new Image();
             img.onload = function() {
                 // 创建canvas来分析图片颜色
@@ -457,53 +639,11 @@
                 // 生成日签结果
                 omikujiResult = generateOmikujiResult(dominantColor);
                 
-                // 显示生成按钮
-                showGenerateButton();
+                // 生成日签图片
+                generateImage();
             };
             
-            img.src = URL.createObjectURL(file);
-        }
-
-        // 显示预览
-        function showPreview(file) {
-            const preview = document.getElementById('preview');
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                preview.innerHTML = `<img src="${e.target.result}" alt="预览图片">`;
-            };
-            
-            reader.readAsDataURL(file);
-        }
-
-        // 显示生成按钮
-        function showGenerateButton() {
-            document.getElementById('generateBtn').style.display = 'block';
-            document.getElementById('resetBtn').style.display = 'block';
-        }
-
-        // 生成占卜结果
-        function generateOmikuji() {
-            if (!selectedFile) return;
-            
-            showLoading();
-            
-            // 直接使用已分析的颜色生成图片
-            setTimeout(async () => {
-                await generateImage();
-            }, 2000);
-        }
-
-        // 显示加载中
-        function showLoading() {
-            document.getElementById('uploadArea').classList.add('hidden');
-            document.getElementById('loading').classList.add('show');
-        }
-
-        // 获取随机颜色
-        function getRandomColor() {
-            const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉"];
-            return colors[Math.floor(Math.random() * colors.length)];
+            img.src = URL.createObjectURL(selectedFile);
         }
 
         // RGB转HSL
@@ -517,7 +657,7 @@
             let h, s, l = (max + min) / 2;
             
             if (max === min) {
-                h = s = 0; // 无色
+                h = s = 0;
             } else {
                 const d = max - min;
                 s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
@@ -533,13 +673,12 @@
             return [h * 360, s * 100, l * 100];
         }
 
-        // 分析图片主色调 - 优化版HSL色彩空间
+        // 分析图片主色调
         function analyzeImageColor(imageData) {
             const data = imageData.data;
             const colorCounts = {};
-            const sampleSize = 2000; // 增加采样点数量
+            const sampleSize = 2000;
             
-            // 分层采样：中心区域权重更高
             const width = imageData.width;
             const height = imageData.height;
             const centerX = width / 2;
@@ -548,13 +687,10 @@
             for (let i = 0; i < sampleSize; i++) {
                 let x, y;
                 
-                // 70%概率采样中心区域，30%概率采样边缘
                 if (Math.random() < 0.7) {
-                    // 中心区域采样
                     x = Math.floor(centerX + (Math.random() - 0.5) * width * 0.6);
                     y = Math.floor(centerY + (Math.random() - 0.5) * height * 0.6);
                 } else {
-                    // 全图随机采样
                     x = Math.floor(Math.random() * width);
                     y = Math.floor(Math.random() * height);
                 }
@@ -565,29 +701,19 @@
                 const b = data[index + 2];
                 const a = data[index + 3];
                 
-                // 跳过透明像素和过暗像素
                 if (a < 128 || (r < 30 && g < 30 && b < 30)) continue;
                 
-                // 转换为HSL
                 const [h, s, l] = rgbToHsl(r, g, b);
                 
-                // 优化颜色判断逻辑
                 let colorName = "白";
                 
-                // 极低亮度 = 黑色
                 if (l < 10) {
                     colorName = "黑";
-                }
-                // 低饱和度 = 白色/灰色
-                else if (s < 15) {
+                } else if (s < 15) {
                     colorName = l > 60 ? "白" : "黑";
-                }
-                // 高亮度低饱和度 = 白色
-                else if (l > 80 && s < 30) {
+                } else if (l > 80 && s < 30) {
                     colorName = "白";
-                }
-                // 根据色相判断颜色（调整阈值）
-                else if (h >= 0 && h < 20) colorName = "红";
+                } else if (h >= 0 && h < 20) colorName = "红";
                 else if (h >= 20 && h < 50) colorName = "橙";
                 else if (h >= 50 && h < 80) colorName = "黄";
                 else if (h >= 80 && h < 160) colorName = "绿";
@@ -595,12 +721,11 @@
                 else if (h >= 200 && h < 260) colorName = "蓝";
                 else if (h >= 260 && h < 300) colorName = "紫";
                 else if (h >= 300 && h < 340) colorName = "粉";
-                else colorName = "红"; // 340-360度回到红色
+                else colorName = "红";
                 
                 colorCounts[colorName] = (colorCounts[colorName] || 0) + 1;
             }
             
-            // 找到出现次数最多的颜色
             let maxCount = 0;
             let dominantColor = "白";
             for (const [color, count] of Object.entries(colorCounts)) {
@@ -610,15 +735,10 @@
                 }
             }
             
-            // 如果采样点太少，使用备用方案
             if (maxCount < 10) {
-                console.log('采样点不足，使用随机颜色');
                 const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉"];
                 return colors[Math.floor(Math.random() * colors.length)];
             }
-            
-            console.log('HSL颜色分析结果:', colorCounts);
-            console.log('主色调:', dominantColor, `(出现${maxCount}次)`);
             
             return dominantColor;
         }
@@ -643,25 +763,19 @@
             };
         }
 
-        // 生成图片
         // 字体加载检测
-        // 字体加载函数 - 强制等待字体加载完成
         function loadFonts() {
             return new Promise((resolve) => {
                 if (document.fonts) {
-                    // 检查字体是否已加载
                     const checkFontLoaded = (fontFamily) => {
                         return document.fonts.check(`16px ${fontFamily}`);
                     };
                     
-                    // 如果字体已加载，直接返回
                     if (checkFontLoaded('FZYaSongT-R-GB') && checkFontLoaded('FZYaSongS-R-GB')) {
-                        console.log('字体已加载');
                         resolve();
                         return;
                     }
                     
-                    // 预加载字体
                     const fontPromises = [
                         document.fonts.load('24px FZYaSongT-R-GB'),
                         document.fonts.load('20px FZYaSongS-R-GB'),
@@ -669,154 +783,104 @@
                     ];
                     
                     Promise.all(fontPromises).then(() => {
-                        console.log('所有字体加载完成');
                         resolve();
                     }).catch((error) => {
                         console.log('字体加载失败，使用备用方案:', error);
                         setTimeout(resolve, 3000);
                     });
                 } else {
-                    // 备用方案
-                    console.log('document.fonts 不支持，使用备用方案');
                     setTimeout(resolve, 3000);
                 }
             });
         }
 
-        // 检测字体是否可用
-        function checkFontAvailable(fontFamily) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // 设置测试字体
-            ctx.font = '16px ' + fontFamily;
-            const testText = '测试字体';
-            const metrics1 = ctx.measureText(testText);
-            
-            // 设置备用字体
-            ctx.font = '16px serif';
-            const metrics2 = ctx.measureText(testText);
-            
-            // 如果宽度不同，说明字体已加载
-            return metrics1.width !== metrics2.width;
-        }
-
+        // 生成图片
         async function generateImage() {
-            // 等待字体加载完成
             await loadFonts();
             
-            // 检测字体是否真正可用
-            if (!checkFontAvailable('FZYaSongT-R-GB')) {
-                console.warn('方正标雅宋繁体字体未加载，可能影响签文显示');
-            }
-            if (!checkFontAvailable('FZYaSongS-R-GB')) {
-                console.warn('方正标雅宋简体字体未加载，可能影响其他文字显示');
-            }
-            
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            // 设置画布尺寸为600x800（匹配SVG模板）
             canvas.width = 600;
             canvas.height = 800;
             
-            // 随机选择模板
             const templates = [
                 'public/定稿1（for 前端）.svg',
                 'public/定稿2（for 前端）.svg'
             ];
             const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
-            console.log('使用模板:', randomTemplate); // 调试信息
             
-            // 创建SVG图像
             const svgImg = new Image();
             svgImg.onload = function() {
-                // 绘制SVG背景
                 ctx.drawImage(svgImg, 0, 0, 600, 800);
                 
-                // 绘制宜忌内容（根据SVG灰色框精确位置）
+                // 绘制宜忌内容
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#000';
                 
-                // 限制宜忌文本长度不超过150像素
                 let yiText = omikujiResult.yi.join(' ');
                 let jiText = omikujiResult.ji.join(' ');
                 
-                // 设置宜忌文字样式
-                ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
-                
-                // 宜内容 - 只显示两个三字短语，增加间距
                 const yiPhrases = yiText.split(' ').slice(0, 2);
-                const yiDisplay = yiPhrases.join('  '); // 两个空格增加间距
-                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20); // 再往右调整2像素
+                const yiDisplay = yiPhrases.join('  ');
+                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20);
                 
-                // 忌内容 - 只显示两个三字短语，增加间距
                 const jiPhrases = jiText.split(' ').slice(0, 2);
-                const jiDisplay = jiPhrases.join('  '); // 两个空格增加间距
-                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20); // 再往右调整2像素
+                const jiDisplay = jiPhrases.join('  ');
+                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20);
                 
-                // 绘制幸运信息（根据SVG灰色框左上角位置，只显示内容）
+                // 绘制幸运信息
                 ctx.font = '16px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
-                // 幸运色 - 根据SVG灰色框 (152, 660, 33, 23) 左上角开始
                 ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16);
-                
-                // 幸运物 - 根据SVG灰色框 (152, 687, 33, 23) 左上角开始
                 ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16);
-                
-                // 幸运地 - 根据SVG灰色框 (152, 714, 33, 23) 左上角开始
                 ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18);
                 
-                // 绘制温馨提醒（根据您提供的位置，去掉前缀）
+                // 绘制温馨提醒
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#000';
                 ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20);
                 
-                // 绘制签文（根据SVG灰色框左上角位置，竖向排列，文字正着）
-                ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif'; // 方正标雅宋繁体 + 回退字体
+                // 绘制签文
+                ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#000';
                 
                 const omikujiText = omikujiResult.omikuji_text;
-                const charHeight = 25; // 根据灰色框高度261/字符数调整
-                // 根据SVG灰色框 (487, 477, 26, 261) 调整位置
-                const startX = 487 + 10; // 往左调整
-                const startY = 477 + 30; // 往下调整
+                const charHeight = 25;
+                const startX = 487 + 10;
+                const startY = 477 + 30;
                 
-                // 从上到下垂直排列，每个字都是正立的
                 for (let i = 0; i < omikujiText.length; i++) {
                     const char = omikujiText[i];
                     if (char && char !== ' ') {
                         ctx.save();
-                        // 直接从上到下排列，不旋转
                         ctx.translate(startX, startY + i * charHeight);
                         ctx.fillText(char, 0, 0);
                         ctx.restore();
                     }
                 }
                 
-                
-                // 转换为图片
                 generatedImage = canvas.toDataURL('image/png', 1.0);
                 showResult();
             };
             
-            // 加载SVG模板
             svgImg.src = randomTemplate;
         }
 
         // 显示结果
         function showResult() {
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('result').classList.add('show');
+            // 隐藏等待环节
+            document.getElementById('waitingContent').classList.remove('show');
             
-            // 显示结果图片
+            // 显示结果
+            const resultContent = document.getElementById('resultContent');
+            resultContent.classList.add('show');
             document.getElementById('resultImage').src = generatedImage;
-            
         }
 
         // 下载图片
@@ -829,19 +893,19 @@
             }
         }
 
-        // 重置上传
-        function resetUpload() {
+        // 重置所有
+        function resetAll() {
             selectedFile = null;
             generatedImage = null;
             omikujiResult = null;
             
             document.getElementById('fileInput').value = '';
             document.getElementById('preview').innerHTML = '';
-            document.getElementById('generateBtn').style.display = 'none';
-            document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('uploadArea').classList.remove('hidden');
-            document.getElementById('loading').classList.remove('show');
-            document.getElementById('result').classList.remove('show');
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('guideItem1').classList.remove('show');
+            document.getElementById('guideItem2').classList.remove('show');
+            document.getElementById('waitingContent').classList.remove('show');
+            document.getElementById('resultContent').classList.remove('show');
         }
     </script>
 </body>
