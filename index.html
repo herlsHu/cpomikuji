@@ -258,10 +258,8 @@
         }
 
         .gift-info {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            color: #333;
             padding: 20px;
-            border-radius: 15px;
             text-align: center;
             font-size: 16px;
             line-height: 1.6;
@@ -545,13 +543,13 @@
             
             setTimeout(() => {
                 document.getElementById('guideItem2').classList.add('show');
-            }, 2000);
+            }, 5500); // 两个文字块之间留5秒
             
             // 3. 延迟显示等待环节
             setTimeout(() => {
                 document.getElementById('guideSection').classList.remove('show');
                 document.getElementById('waitingSection').classList.add('show');
-            }, 5000);
+            }, 13000); // 两个界面一起再留8秒
             
             // 4. 分析图片并生成日签
             setTimeout(async () => {
