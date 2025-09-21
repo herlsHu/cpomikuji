@@ -797,6 +797,7 @@
         function showResult() {
             // 隐藏等待环节
             document.getElementById('waitingSection').classList.remove('show');
+            document.getElementById('waitingSection').classList.add('hidden');
             
             // 显示结果
             document.getElementById('resultSection').classList.add('show');
@@ -827,6 +828,7 @@
             document.getElementById('guideItem1').classList.remove('show');
             document.getElementById('guideItem2').classList.remove('show');
             document.getElementById('waitingSection').classList.remove('show');
+            document.getElementById('waitingSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('show');
         }
     </script>
