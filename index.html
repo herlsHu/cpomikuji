@@ -327,13 +327,13 @@
                 <div class="guide-item" id="guideItem1">
                     <div class="guide-icon">🎒</div>
                     <h3>放置娃包</h3>
-                    <p>请将您的娃包轻轻放置在指定区域，确保包内物品安全，拉链拉好，避免贵重物品掉落。让我们的AI能够更好地感知您的今日运势。</p>
+                    <p>请把娃包放在占卜台正中央圈起的区域</p>
                 </div>
                 
                 <div class="guide-item" id="guideItem2">
                     <div class="guide-icon">👤</div>
                     <h3>站立位置</h3>
-                    <p>请站在指定位置，保持自然姿态，双手可以轻抚娃包，让我们的AI更好地感知您的今日运势和心情状态。</p>
+                    <p>请后退一步站在指定位置，让谷语娃包能够看到你的今日状态</p>
                 </div>
             </div>
 
@@ -523,18 +523,18 @@
             
             setTimeout(() => {
                 document.getElementById('guideItem2').classList.add('show');
-            }, 5500); // 两个文字块之间留5秒
+            }, 5500); // b出现5秒后显示c
             
             // 3. 延迟显示等待环节
             setTimeout(() => {
                 document.getElementById('guideSection').classList.remove('show');
                 document.getElementById('waitingSection').classList.add('show');
-            }, 13000); // 两个界面一起再留8秒
+            }, 13500); // c出现8秒后显示d
             
-            // 4. 分析图片并生成日签
+            // 4. 分析图片并生成日签（确保等待环节至少保持3秒）
             setTimeout(async () => {
                 await analyzeAndGenerate();
-            }, 8000);
+            }, 16500); // 等待环节至少保持3秒（13.5秒 + 3秒 = 16.5秒）
         }
 
         // 分析图片并生成日签
