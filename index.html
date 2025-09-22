@@ -460,6 +460,9 @@
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file && file.type.startsWith('image/')) {
+                // 重置页面状态
+                resetPageState();
+                
                 selectedFile = file;
                 showPreview(file);
                 showStartButton();
@@ -484,6 +487,9 @@
             if (files.length > 0) {
                 const file = files[0];
                 if (file.type.startsWith('image/')) {
+                    // 重置页面状态
+                    resetPageState();
+                    
                     selectedFile = file;
                     showPreview(file);
                     showStartButton();
@@ -1037,6 +1043,23 @@
                 link.href = generatedImage;
                 link.click();
             }
+        }
+
+        // 重置页面状态（用于文件上传时）
+        function resetPageState() {
+            // 隐藏所有页面
+            document.getElementById('guideSection').classList.remove('show');
+            document.getElementById('waitingSection').classList.remove('show');
+            document.getElementById('waitingSection').classList.add('hidden');
+            document.getElementById('resultSection').classList.remove('show');
+            
+            // 显示开始页面
+            document.getElementById('triggerSection').classList.remove('hidden');
+            document.getElementById('triggerSection').classList.add('show');
+            
+            // 重置变量
+            generatedImage = null;
+            omikujiResult = null;
         }
 
         // 重置所有
