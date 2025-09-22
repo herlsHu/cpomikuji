@@ -533,6 +533,7 @@
             setTimeout(() => {
                 document.getElementById('guideSection').classList.remove('show');
                 document.getElementById('waitingSection').classList.add('show');
+                console.log('Loading页面已显示');
             }, 10500); // c出现6秒后显示d
             
             // 4. 分析图片并生成日签（确保等待环节至少保持5秒）
@@ -544,7 +545,9 @@
 
         // 分析图片并生成日签
         async function analyzeAndGenerate() {
+            console.log('开始分析图片');
             if (!selectedFile) {
+                console.log('没有文件，直接显示结果');
                 showResult();
                 return;
             }
@@ -962,6 +965,7 @@
 
         // 显示结果
         function showResult() {
+            console.log('显示结果，generatedImage:', generatedImage ? '已生成' : '未生成');
             // 隐藏等待环节
             document.getElementById('waitingSection').classList.remove('show');
             document.getElementById('waitingSection').classList.add('hidden');
@@ -995,8 +999,6 @@
         // 重置页面状态（用于文件上传时）
         function resetPageState() {
             document.getElementById('guideSection').classList.remove('show');
-            document.getElementById('waitingSection').classList.remove('show');
-            document.getElementById('waitingSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('show');
             document.getElementById('triggerSection').classList.remove('hidden');
             document.getElementById('triggerSection').classList.add('show');
