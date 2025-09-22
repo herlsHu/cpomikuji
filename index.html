@@ -533,6 +533,7 @@
             // 3. 引导等待环节（没有生成完就保持到签文生成结束）
             setTimeout(() => {
                 document.getElementById('guideSection').classList.remove('show');
+                document.getElementById('waitingSection').classList.remove('hidden');
                 document.getElementById('waitingSection').classList.add('show');
                 console.log('Loading页面已显示');
             }, 10500); // c出现6秒后显示d
@@ -1004,6 +1005,7 @@
             document.getElementById('resultSection').classList.remove('show');
             document.getElementById('triggerSection').classList.remove('hidden');
             document.getElementById('triggerSection').classList.add('show');
+            console.log('页面状态已重置');
         }
 
         // 重置所有
