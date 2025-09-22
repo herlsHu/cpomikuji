@@ -634,39 +634,39 @@
                 const [h, s, l] = rgbToHsl(r, g, b);
                 
                 // 更精确的颜色分类
-                let colorName = "白色";
+                let colorName = "白";
                 
                 // 极低亮度 = 黑色
                 if (l < 8) {
-                    colorName = "黑色";
+                    colorName = "黑";
                 }
                 // 低饱和度 = 白色/灰色
                 else if (s < 12) {
-                    if (l > 70) colorName = "白色";
-                    else if (l > 40) colorName = "灰色";
-                    else colorName = "黑色";
+                    if (l > 70) colorName = "白";
+                    else if (l > 40) colorName = "灰";
+                    else colorName = "黑";
                 }
                 // 高亮度低饱和度 = 白色
                 else if (l > 85 && s < 25) {
-                    colorName = "白色";
+                    colorName = "白";
                 }
                 // 根据色相判断颜色（更精确的阈值）
-                else if (h >= 0 && h < 15) colorName = "红色";
-                else if (h >= 15 && h < 35) colorName = "橙色";
-                else if (h >= 35 && h < 65) colorName = "黄色";
-                else if (h >= 65 && h < 140) colorName = "绿色";
-                else if (h >= 140 && h < 180) colorName = "青色";
-                else if (h >= 180 && h < 240) colorName = "蓝色";
-                else if (h >= 240 && h < 280) colorName = "紫色";
-                else if (h >= 280 && h < 320) colorName = "粉色";
-                else colorName = "红色"; // 320-360度回到红色
+                else if (h >= 0 && h < 15) colorName = "红";
+                else if (h >= 15 && h < 35) colorName = "橙";
+                else if (h >= 35 && h < 65) colorName = "黄";
+                else if (h >= 65 && h < 140) colorName = "绿";
+                else if (h >= 140 && h < 180) colorName = "青";
+                else if (h >= 180 && h < 240) colorName = "蓝";
+                else if (h >= 240 && h < 280) colorName = "紫";
+                else if (h >= 280 && h < 320) colorName = "粉";
+                else colorName = "红"; // 320-360度回到红色
                 
                 colorCounts[colorName] = (colorCounts[colorName] || 0) + 1;
             }
             
             // 找到出现次数最多的颜色
             let maxCount = 0;
-            let dominantColor = "白色";
+            let dominantColor = "白";
             for (const [color, count] of Object.entries(colorCounts)) {
                 if (count > maxCount) {
                     maxCount = count;
@@ -677,7 +677,7 @@
             // 如果采样点太少，使用备用方案
             if (maxCount < 15) {
                 console.log('采样点不足，使用随机颜色');
-                const colors = ["白色","黑色","红色","橙色","黄色","绿色","青色","蓝色","紫色","粉色"];
+                const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉","灰"];
                 return colors[Math.floor(Math.random() * colors.length)];
             }
             
