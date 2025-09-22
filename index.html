@@ -843,11 +843,11 @@
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, 600, 888);
                 
-                // 将SVG内容居中绘制，四周留白边
-                const offsetX = 44; // 水平居中：(600-512)/2 = 44
+                // 将SVG内容居中绘制，保持原始比例
+                const offsetX = 0; // 水平居中：600宽度填满canvas
                 const offsetY = 44; // 垂直居中：(888-800)/2 = 44
-                const contentWidth = 512; // 600 - 44*2 = 512
-                const contentHeight = 800;
+                const contentWidth = 600; // 保持原始宽度
+                const contentHeight = 800; // 保持原始高度
                 ctx.drawImage(svgImg, offsetX, offsetY, contentWidth, contentHeight);
                 
                 // 绘制宜忌内容
@@ -858,32 +858,28 @@
                 let yiText = omikujiResult.yi.join(' ');
                 let jiText = omikujiResult.ji.join(' ');
                 
-                // 按比例缩放位置：512/600 = 0.853
-                const scaleX = contentWidth / 600;
-                const scaleY = contentHeight / 800;
-                
                 const yiPhrases = yiText.split(' ').slice(0, 2);
                 const yiDisplay = yiPhrases.join('  ');
-                ctx.fillText(yiDisplay, (66.75 + 72) * scaleX + offsetX, (505 + 20) * scaleY + offsetY);
+                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20 + offsetY);
                 
                 const jiPhrases = jiText.split(' ').slice(0, 2);
                 const jiDisplay = jiPhrases.join('  ');
-                ctx.fillText(jiDisplay, (266.25 + 72) * scaleX + offsetX, (505 + 20) * scaleY + offsetY);
+                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20 + offsetY);
                 
                 // 绘制幸运信息
                 ctx.font = '16px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
-                ctx.fillText(omikujiResult.lucky_color, 152 * scaleX + offsetX, (660 + 16) * scaleY + offsetY);
-                ctx.fillText(omikujiResult.lucky_item, 152 * scaleX + offsetX, (687 + 16) * scaleY + offsetY);
-                ctx.fillText(omikujiResult.lucky_place, 152 * scaleX + offsetX, (714 + 18) * scaleY + offsetY);
+                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16 + offsetY);
+                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16 + offsetY);
+                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18 + offsetY);
                 
                 // 绘制温馨提醒
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#000';
-                ctx.fillText(omikujiResult.warm_tip, 74 * scaleX + offsetX, (597 + 20) * scaleY + offsetY);
+                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20 + offsetY);
                 
                 // 绘制签文
                 ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
@@ -892,8 +888,8 @@
                 
                 const omikujiText = omikujiResult.omikuji_text;
                 const charHeight = 25;
-                const startX = (487 + 10) * scaleX + offsetX;
-                const startY = (477 + 30) * scaleY + offsetY;
+                const startX = 487 + 10;
+                const startY = 477 + 30 + offsetY;
                 
                 for (let i = 0; i < omikujiText.length; i++) {
                     const char = omikujiText[i];
