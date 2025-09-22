@@ -870,7 +870,9 @@
                 ctx.drawImage(svgImg, offsetX, offsetY, contentWidth, contentHeight);
                 
                 // 绘制宜忌内容
-                ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                const baseFontSize = 20;
+                const scaledFontSize = Math.round(baseFontSize * Math.min(scaleX, scaleY));
+                ctx.font = `${scaledFontSize}px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif`;
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#000';
                 
@@ -890,7 +892,8 @@
                 ctx.fillText(jiDisplay, (266.25 + 72) * scaleX + offsetX, (505 + 20) * scaleY + offsetY);
                 
                 // 绘制幸运信息
-                ctx.font = '16px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                const luckyFontSize = Math.round(16 * Math.min(scaleX, scaleY));
+                ctx.font = `${luckyFontSize}px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif`;
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
@@ -899,18 +902,20 @@
                 ctx.fillText(omikujiResult.lucky_place, 152 * scaleX + offsetX, (714 + 18) * scaleY + offsetY);
                 
                 // 绘制温馨提醒
-                ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                const warmTipFontSize = Math.round(20 * Math.min(scaleX, scaleY));
+                ctx.font = `${warmTipFontSize}px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif`;
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#000';
                 ctx.fillText(omikujiResult.warm_tip, 74 * scaleX + offsetX, (597 + 20) * scaleY + offsetY);
                 
                 // 绘制签文
-                ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
+                const omikujiFontSize = Math.round(24 * Math.min(scaleX, scaleY));
+                ctx.font = `${omikujiFontSize}px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif`;
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#000';
                 
                 const omikujiText = omikujiResult.omikuji_text;
-                const charHeight = 25;
+                const charHeight = Math.round(25 * Math.min(scaleX, scaleY));
                 const startX = (487 + 10) * scaleX + offsetX;
                 const startY = (477 + 30) * scaleY + offsetY;
                 
