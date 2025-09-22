@@ -510,7 +510,11 @@
 
         // 开始抽取日签
         async function startOmikuji() {
-            if (!selectedFile) return;
+            console.log('开始抽取日签，selectedFile:', selectedFile);
+            if (!selectedFile) {
+                console.error('没有选中的文件，无法开始');
+                return;
+            }
             
             // 1. 隐藏触发环节，显示引导环节
             document.getElementById('triggerSection').classList.add('hidden');
@@ -559,6 +563,16 @@
         // 分析图片并生成日签
         async function analyzeAndGenerate() {
             console.log('开始分析图片并生成日签');
+            
+            // 检查是否有选中的文件
+            if (!selectedFile) {
+                console.error('没有选中的文件，无法分析，selectedFile:', selectedFile);
+                showResult();
+                return;
+            }
+            
+            console.log('文件验证通过，开始创建图片对象，selectedFile:', selectedFile);
+            
             const img = new Image();
             img.onload = function() {
                 console.log('图片加载成功，开始分析颜色');
@@ -586,7 +600,17 @@
                 generateImage();
             };
             
-            img.src = URL.createObjectURL(selectedFile);
+            img.onerror = function() {
+                console.error('图片加载失败');
+                showResult();
+            };
+            
+            try {
+                img.src = URL.createObjectURL(selectedFile);
+            } catch (error) {
+                console.error('创建图片URL失败:', error);
+                showResult();
+            }
         }
 
         // RGB转HSL
