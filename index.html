@@ -883,6 +883,10 @@
                 
                 ctx.drawImage(svgImg, offsetX, offsetY, contentWidth, contentHeight);
                 
+                // 计算缩放比例
+                const scaleX = contentWidth / 600;
+                const scaleY = contentHeight / 800;
+                
                 // 绘制宜忌内容
                 const baseFontSize = 20;
                 const scaledFontSize = Math.round(baseFontSize * Math.min(scaleX, scaleY));
@@ -892,10 +896,6 @@
                 
                 let yiText = omikujiResult.yi.join(' ');
                 let jiText = omikujiResult.ji.join(' ');
-                
-                // 计算缩放比例
-                const scaleX = contentWidth / 600;
-                const scaleY = contentHeight / 800;
                 
                 const yiPhrases = yiText.split(' ').slice(0, 2);
                 const yiDisplay = yiPhrases.join('  ');
