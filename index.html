@@ -594,24 +594,30 @@
             return [h * 360, s * 100, l * 100];
         }
 
-        // 分析图片主色调
+        // 分析图片主色调 - 优化版，专门针对用户照片
         function analyzeImageColor(imageData) {
             const data = imageData.data;
             const colorCounts = {};
-            const sampleSize = 2000;
+            const sampleSize = 3000; // 增加采样点数量
             
             const width = imageData.width;
             const height = imageData.height;
             const centerX = width / 2;
             const centerY = height / 2;
             
+            // 分层采样策略：重点关注用户身体区域
             for (let i = 0; i < sampleSize; i++) {
                 let x, y;
                 
-                if (Math.random() < 0.7) {
-                    x = Math.floor(centerX + (Math.random() - 0.5) * width * 0.6);
-                    y = Math.floor(centerY + (Math.random() - 0.5) * height * 0.6);
+                // 80%概率采样中心区域（用户身体），20%概率采样全图
+                if (Math.random() < 0.8) {
+                    // 中心区域采样，重点关注用户身体
+                    const bodyWidth = width * 0.4;  // 身体宽度约为图片宽度的40%
+                    const bodyHeight = height * 0.6; // 身体高度约为图片高度的60%
+                    x = Math.floor(centerX + (Math.random() - 0.5) * bodyWidth);
+                    y = Math.floor(centerY + (Math.random() - 0.5) * bodyHeight);
                 } else {
+                    // 全图随机采样
                     x = Math.floor(Math.random() * width);
                     y = Math.floor(Math.random() * height);
                 }
@@ -622,33 +628,45 @@
                 const b = data[index + 2];
                 const a = data[index + 3];
                 
-                if (a < 128 || (r < 30 && g < 30 && b < 30)) continue;
+                // 跳过透明像素和过暗像素
+                if (a < 128 || (r < 20 && g < 20 && b < 20)) continue;
                 
                 const [h, s, l] = rgbToHsl(r, g, b);
                 
-                let colorName = "白";
+                // 更精确的颜色分类
+                let colorName = "白色";
                 
-                if (l < 10) {
-                    colorName = "黑";
-                } else if (s < 15) {
-                    colorName = l > 60 ? "白" : "黑";
-                } else if (l > 80 && s < 30) {
-                    colorName = "白";
-                } else if (h >= 0 && h < 20) colorName = "红";
-                else if (h >= 20 && h < 50) colorName = "橙";
-                else if (h >= 50 && h < 80) colorName = "黄";
-                else if (h >= 80 && h < 160) colorName = "绿";
-                else if (h >= 160 && h < 200) colorName = "青";
-                else if (h >= 200 && h < 260) colorName = "蓝";
-                else if (h >= 260 && h < 300) colorName = "紫";
-                else if (h >= 300 && h < 340) colorName = "粉";
-                else colorName = "红";
+                // 极低亮度 = 黑色
+                if (l < 8) {
+                    colorName = "黑色";
+                }
+                // 低饱和度 = 白色/灰色
+                else if (s < 12) {
+                    if (l > 70) colorName = "白色";
+                    else if (l > 40) colorName = "灰色";
+                    else colorName = "黑色";
+                }
+                // 高亮度低饱和度 = 白色
+                else if (l > 85 && s < 25) {
+                    colorName = "白色";
+                }
+                // 根据色相判断颜色（更精确的阈值）
+                else if (h >= 0 && h < 15) colorName = "红色";
+                else if (h >= 15 && h < 35) colorName = "橙色";
+                else if (h >= 35 && h < 65) colorName = "黄色";
+                else if (h >= 65 && h < 140) colorName = "绿色";
+                else if (h >= 140 && h < 180) colorName = "青色";
+                else if (h >= 180 && h < 240) colorName = "蓝色";
+                else if (h >= 240 && h < 280) colorName = "紫色";
+                else if (h >= 280 && h < 320) colorName = "粉色";
+                else colorName = "红色"; // 320-360度回到红色
                 
                 colorCounts[colorName] = (colorCounts[colorName] || 0) + 1;
             }
             
+            // 找到出现次数最多的颜色
             let maxCount = 0;
-            let dominantColor = "白";
+            let dominantColor = "白色";
             for (const [color, count] of Object.entries(colorCounts)) {
                 if (count > maxCount) {
                     maxCount = count;
@@ -656,10 +674,15 @@
                 }
             }
             
-            if (maxCount < 10) {
-                const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉"];
+            // 如果采样点太少，使用备用方案
+            if (maxCount < 15) {
+                console.log('采样点不足，使用随机颜色');
+                const colors = ["白色","黑色","红色","橙色","黄色","绿色","青色","蓝色","紫色","粉色"];
                 return colors[Math.floor(Math.random() * colors.length)];
             }
+            
+            console.log('用户照片颜色分析结果:', colorCounts);
+            console.log('主色调:', dominantColor, `(出现${maxCount}次)`);
             
             return dominantColor;
         }
