@@ -830,18 +830,6 @@
             canvas.width = 600;
             canvas.height = 888;
             
-            // 移动端优化：设置高DPI支持
-            const devicePixelRatio = window.devicePixelRatio || 1;
-            
-            if (devicePixelRatio > 1) {
-                const rect = canvas.getBoundingClientRect();
-                canvas.width = 600 * devicePixelRatio;
-                canvas.height = 888 * devicePixelRatio;
-                canvas.style.width = '600px';
-                canvas.style.height = '888px';
-                ctx.scale(devicePixelRatio, devicePixelRatio);
-            }
-            
             const templates = [
                 'public/定稿1（for 前端）.svg',
                 'public/定稿2（for 前端）.svg'
@@ -913,6 +901,7 @@
                 // 检查是否已经等待了足够的时间
                 const elapsedTime = Date.now() - startTime;
                 if (elapsedTime >= minWaitTime) {
+                    // 图片已生成且等待时间足够，直接显示结果
                     showResult();
                 } else {
                     // 如果还没到最小等待时间，延迟显示结果
@@ -927,6 +916,12 @@
 
         // 显示结果
         function showResult() {
+            // 检查是否有生成的结果图片
+            if (!generatedImage) {
+                console.log('还没有生成图片，等待中...');
+                return;
+            }
+            
             // 隐藏等待环节
             document.getElementById('waitingSection').classList.remove('show');
             document.getElementById('waitingSection').classList.add('hidden');
