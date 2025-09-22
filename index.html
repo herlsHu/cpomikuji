@@ -512,6 +512,7 @@
 
         // 开始抽取日签
         async function startOmikuji() {
+            console.log('开始抽取日签，selectedFile:', selectedFile);
             if (!selectedFile) return;
             
             // 1. 隐藏触发环节，显示引导环节
@@ -998,10 +999,17 @@
 
         // 重置页面状态（用于文件上传时）
         function resetPageState() {
+            console.log('重置页面状态');
             document.getElementById('guideSection').classList.remove('show');
+            document.getElementById('waitingSection').classList.remove('show');
+            document.getElementById('waitingSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('show');
             document.getElementById('triggerSection').classList.remove('hidden');
             document.getElementById('triggerSection').classList.add('show');
+            
+            // 重置变量
+            generatedImage = null;
+            omikujiResult = null;
         }
 
         // 重置所有
