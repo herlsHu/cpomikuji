@@ -530,17 +530,17 @@
                 document.getElementById('guideItem2').classList.add('show');
             }, 4500); // b出现4秒后显示c
             
-            // 3. 立即显示等待环节
+            // 3. 引导等待环节（没有生成完就保持到签文生成结束）
             setTimeout(() => {
                 document.getElementById('guideSection').classList.remove('show');
                 document.getElementById('waitingSection').classList.add('show');
                 console.log('Loading页面已显示');
-                
-                // 4. 分析图片并生成日签
-                setTimeout(async () => {
-                    await analyzeAndGenerate();
-                }, 5000); // 等待5秒后开始分析
-            }, 3000); // 3秒后显示loading
+            }, 10500); // c出现6秒后显示d
+            
+            // 4. 分析图片并生成日签
+            setTimeout(async () => {
+                await analyzeAndGenerate();
+            }, 15500); // 等待环节至少保持5秒
             
         }
 
@@ -836,6 +836,9 @@
         async function generateImage() {
             await loadFonts();
             
+            const startTime = Date.now();
+            const minWaitTime = 5000; // 最小等待5秒
+            
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
@@ -942,7 +945,16 @@
                 }
                 
                 generatedImage = canvas.toDataURL('image/png', 1.0);
-                showResult();
+                
+                // 确保loading页面保持到图片生成完成
+                const elapsedTime = Date.now() - startTime;
+                if (elapsedTime >= minWaitTime) {
+                    showResult();
+                } else {
+                    setTimeout(() => {
+                        showResult();
+                    }, minWaitTime - elapsedTime);
+                }
             };
             
             svgImg.onerror = function() {
@@ -958,10 +970,19 @@
             document.getElementById('waitingSection').classList.remove('show');
             document.getElementById('waitingSection').classList.add('hidden');
             
-            // 显示结果页面
-            document.getElementById('resultSection').classList.add('show');
             if (generatedImage) {
+                // 有图片时显示结果页面
+                document.getElementById('resultSection').classList.add('show');
                 document.getElementById('resultImage').src = generatedImage;
+            } else {
+                // 没有图片时，重新显示开始页面
+                document.getElementById('guideSection').classList.remove('show');
+                document.getElementById('resultSection').classList.remove('show');
+                document.getElementById('triggerSection').classList.add('show');
+                document.getElementById('fileInput').value = '';
+                selectedFile = null;
+                generatedImage = null;
+                omikujiResult = null;
             }
         }
 
