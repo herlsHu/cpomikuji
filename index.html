@@ -530,17 +530,17 @@
                 document.getElementById('guideItem2').classList.add('show');
             }, 4500); // b出现4秒后显示c
             
-            // 3. 延迟显示等待环节
+            // 3. 立即显示等待环节
             setTimeout(() => {
                 document.getElementById('guideSection').classList.remove('show');
                 document.getElementById('waitingSection').classList.add('show');
                 console.log('Loading页面已显示');
-            }, 10500); // c出现6秒后显示d
-            
-            // 4. 分析图片并生成日签（确保等待环节至少保持5秒）
-            setTimeout(async () => {
-                await analyzeAndGenerate();
-            }, 15500); // 等待环节至少保持5秒
+                
+                // 4. 分析图片并生成日签
+                setTimeout(async () => {
+                    await analyzeAndGenerate();
+                }, 5000); // 等待5秒后开始分析
+            }, 3000); // 3秒后显示loading
             
         }
 
@@ -836,9 +836,6 @@
         async function generateImage() {
             await loadFonts();
             
-            const startTime = Date.now();
-            const minWaitTime = 5000; // 最小等待5秒
-            
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
@@ -945,16 +942,7 @@
                 }
                 
                 generatedImage = canvas.toDataURL('image/png', 1.0);
-                
-                // 等待时间控制
-                const elapsedTime = Date.now() - startTime;
-                if (elapsedTime >= minWaitTime) {
-                    showResult();
-                } else {
-                    setTimeout(() => {
-                        showResult();
-                    }, minWaitTime - elapsedTime);
-                }
+                showResult();
             };
             
             svgImg.onerror = function() {
@@ -966,24 +954,14 @@
 
         // 显示结果
         function showResult() {
-            console.log('显示结果，generatedImage:', generatedImage ? '已生成' : '未生成');
             // 隐藏等待环节
             document.getElementById('waitingSection').classList.remove('show');
             document.getElementById('waitingSection').classList.add('hidden');
             
+            // 显示结果页面
+            document.getElementById('resultSection').classList.add('show');
             if (generatedImage) {
-                // 有图片时显示结果页面
-                document.getElementById('resultSection').classList.add('show');
                 document.getElementById('resultImage').src = generatedImage;
-            } else {
-                // 没有图片时，重新显示开始页面
-                document.getElementById('guideSection').classList.remove('show');
-                document.getElementById('resultSection').classList.remove('show');
-                document.getElementById('triggerSection').classList.add('show');
-                document.getElementById('fileInput').value = '';
-                selectedFile = null;
-                generatedImage = null;
-                omikujiResult = null;
             }
         }
 
@@ -999,17 +977,12 @@
 
         // 重置页面状态（用于文件上传时）
         function resetPageState() {
-            console.log('重置页面状态');
             document.getElementById('guideSection').classList.remove('show');
             document.getElementById('waitingSection').classList.remove('show');
             document.getElementById('waitingSection').classList.add('hidden');
             document.getElementById('resultSection').classList.remove('show');
             document.getElementById('triggerSection').classList.remove('hidden');
             document.getElementById('triggerSection').classList.add('show');
-            
-            // 重置变量
-            generatedImage = null;
-            omikujiResult = null;
         }
 
         // 重置所有
