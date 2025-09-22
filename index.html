@@ -851,26 +851,26 @@
                 
                 const yiPhrases = yiText.split(' ').slice(0, 2);
                 const yiDisplay = yiPhrases.join('  ');
-                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20 + 88);
+                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20);
                 
                 const jiPhrases = jiText.split(' ').slice(0, 2);
                 const jiDisplay = jiPhrases.join('  ');
-                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20 + 88);
+                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20);
                 
                 // 绘制幸运信息
                 ctx.font = '16px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
-                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16 + 88);
-                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16 + 88);
-                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18 + 88);
+                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16);
+                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16);
+                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18);
                 
                 // 绘制温馨提醒
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#000';
-                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20 + 88);
+                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20);
                 
                 // 绘制签文
                 ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
@@ -880,7 +880,7 @@
                 const omikujiText = omikujiResult.omikuji_text;
                 const charHeight = 25;
                 const startX = 487 + 10;
-                const startY = 477 + 30 + 88;
+                const startY = 477 + 30;
                 
                 for (let i = 0; i < omikujiText.length; i++) {
                     const char = omikujiText[i];
