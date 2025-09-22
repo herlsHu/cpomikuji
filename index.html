@@ -55,35 +55,36 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 400px; /* 调整为适合6英寸相纸的宽度 */
             width: 100%;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 15px; /* 减小圆角以适应相纸 */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             overflow: hidden;
+            aspect-ratio: 100/148; /* 6英寸相纸比例 100:148 */
         }
 
         .header {
             background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
             color: white;
             text-align: center;
-            padding: 30px 20px;
+            padding: 20px 15px; /* 减小内边距以适应相纸 */
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 22px; /* 减小字体以适应相纸 */
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            font-size: 16px;
+            font-size: 14px; /* 减小字体以适应相纸 */
             opacity: 0.9;
         }
 
         .content {
-            padding: 40px 30px;
+            padding: 25px 20px; /* 减小内边距以适应相纸 */
         }
 
         /* 1. 交互触发环节 */
@@ -116,15 +117,15 @@
         }
 
         .upload-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+            font-size: 36px; /* 减小图标大小 */
+            margin-bottom: 15px; /* 减小间距 */
             color: #ccc;
         }
 
         .upload-text {
             color: #666;
-            margin-bottom: 20px;
-            font-size: 16px;
+            margin-bottom: 15px; /* 减小间距 */
+            font-size: 14px; /* 减小字体 */
         }
 
         .file-input {
@@ -135,14 +136,14 @@
             background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 16px;
+            padding: 12px 25px; /* 减小内边距 */
+            border-radius: 20px; /* 减小圆角 */
+            font-size: 14px; /* 减小字体 */
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .btn:hover {
@@ -194,20 +195,20 @@
 
         .guide-item h3 {
             color: #333;
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 16px; /* 减小字体 */
+            margin-bottom: 8px; /* 减小间距 */
             font-weight: bold;
         }
 
         .guide-item p {
             color: #666;
-            font-size: 16px;
-            line-height: 1.6;
+            font-size: 14px; /* 减小字体 */
+            line-height: 1.5; /* 调整行高 */
         }
 
         .guide-icon {
-            font-size: 28px;
-            margin-bottom: 15px;
+            font-size: 24px; /* 减小图标大小 */
+            margin-bottom: 12px; /* 减小间距 */
         }
 
         /* 3. 引导等待环节 */
@@ -236,7 +237,7 @@
         }
 
         .waiting-text {
-            font-size: 20px;
+            font-size: 16px; /* 减小字体 */
             color: #333;
             font-weight: bold;
         }
@@ -272,23 +273,79 @@
             display: none !important;
         }
 
+        /* 打印样式 - 针对6英寸相纸优化 */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            
+            .container {
+                max-width: 100mm !important; /* 6英寸相纸宽度 */
+                width: 100mm !important;
+                height: 148mm !important; /* 6英寸相纸高度 */
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                aspect-ratio: unset !important;
+            }
+            
+            .header {
+                padding: 8mm 5mm !important;
+            }
+            
+            .content {
+                padding: 5mm !important;
+            }
+            
+            .header h1 {
+                font-size: 18px !important;
+            }
+            
+            .header p {
+                font-size: 12px !important;
+            }
+            
+            .btn {
+                font-size: 12px !important;
+                padding: 8px 15px !important;
+            }
+            
+            .guide-item h3 {
+                font-size: 14px !important;
+            }
+            
+            .guide-item p {
+                font-size: 12px !important;
+            }
+            
+            .waiting-text {
+                font-size: 14px !important;
+            }
+        }
+
         /* 响应式设计 */
         @media (max-width: 480px) {
             .container {
                 margin: 10px;
-                border-radius: 15px;
+                border-radius: 12px; /* 减小圆角 */
+                max-width: 350px; /* 进一步减小宽度 */
             }
             
             .header {
-                padding: 20px 15px;
+                padding: 15px 12px; /* 减小内边距 */
             }
             
             .header h1 {
-                font-size: 24px;
+                font-size: 20px; /* 进一步减小字体 */
+            }
+            
+            .header p {
+                font-size: 12px; /* 进一步减小字体 */
             }
             
             .content {
-                padding: 30px 20px;
+                padding: 20px 15px; /* 减小内边距 */
             }
         }
     </style>
@@ -822,8 +879,8 @@
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            canvas.width = 600;
-            canvas.height = 800;
+            canvas.width = 400; /* 调整为相纸宽度比例 */
+            canvas.height = 592; /* 调整为相纸高度比例 (400 * 148/100) */
             
             const templates = [
                 'public/定稿1（for 前端）.svg',
