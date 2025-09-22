@@ -830,6 +830,17 @@
             canvas.width = 600;
             canvas.height = 888;
             
+            // 移动端优化：设置高DPI支持
+            const devicePixelRatio = window.devicePixelRatio || 1;
+            if (devicePixelRatio > 1) {
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = 600 * devicePixelRatio;
+                canvas.height = 888 * devicePixelRatio;
+                canvas.style.width = '600px';
+                canvas.style.height = '888px';
+                ctx.scale(devicePixelRatio, devicePixelRatio);
+            }
+            
             const templates = [
                 'public/定稿1（for 前端）.svg',
                 'public/定稿2（for 前端）.svg'
@@ -841,10 +852,6 @@
             svgImg.onload = function() {
                 ctx.drawImage(svgImg, 0, 0, 600, 800);
                 
-                // 添加白色填充以适配6英寸相纸
-                ctx.fillStyle = '#FFFFFF'; // 使用白色填充
-                ctx.fillRect(0, 800, 600, 88);
-                
                 // 绘制宜忌内容
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'center';
@@ -855,26 +862,26 @@
                 
                 const yiPhrases = yiText.split(' ').slice(0, 2);
                 const yiDisplay = yiPhrases.join('  ');
-                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20 + 88);
+                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20 + 88 + 5);
                 
                 const jiPhrases = jiText.split(' ').slice(0, 2);
                 const jiDisplay = jiPhrases.join('  ');
-                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20 + 88);
+                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20 + 88 + 5);
                 
                 // 绘制幸运信息
                 ctx.font = '16px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
-                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16 + 88);
-                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16 + 88);
-                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18 + 88);
+                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16 + 88 + 5);
+                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16 + 88 + 5);
+                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18 + 88 + 5);
                 
                 // 绘制温馨提醒
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#000';
-                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20 + 88);
+                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20 + 88 + 5);
                 
                 // 绘制签文
                 ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
@@ -884,7 +891,7 @@
                 const omikujiText = omikujiResult.omikuji_text;
                 const charHeight = 25;
                 const startX = 487 + 10;
-                const startY = 477 + 30 + 88;
+                const startY = 477 + 30 + 88 + 5;
                 
                 for (let i = 0; i < omikujiText.length; i++) {
                     const char = omikujiText[i];
@@ -895,6 +902,10 @@
                         ctx.restore();
                     }
                 }
+                
+                // 在所有文字绘制完成后，添加白色填充以适配6英寸相纸
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 800, 600, 88);
                 
                 generatedImage = canvas.toDataURL('image/png', 1.0);
                 
