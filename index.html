@@ -537,12 +537,22 @@
             setTimeout(async () => {
                 await analyzeAndGenerate();
             }, 15500); // 等待环节至少保持5秒
+            
+            // 添加超时保护，防止程序卡住
+            setTimeout(() => {
+                if (!generatedImage) {
+                    console.error('生成超时，强制显示结果');
+                    showResult();
+                }
+            }, 30000); // 30秒超时
         }
 
         // 分析图片并生成日签
         async function analyzeAndGenerate() {
+            console.log('开始分析图片并生成日签');
             const img = new Image();
             img.onload = function() {
+                console.log('图片加载成功，开始分析颜色');
                 // 创建canvas来分析图片颜色
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -561,6 +571,7 @@
                 
                 // 生成日签结果
                 omikujiResult = generateOmikujiResult(dominantColor);
+                console.log('颜色分析完成，开始生成图片');
                 
                 // 生成日签图片
                 generateImage();
@@ -819,7 +830,9 @@
 
         // 生成图片
         async function generateImage() {
+            console.log('开始生成图片');
             await loadFonts();
+            console.log('字体加载完成');
             
             const startTime = Date.now();
             const minWaitTime = 5000; // 最小等待5秒
@@ -839,6 +852,7 @@
             
             const svgImg = new Image();
             svgImg.onload = function() {
+                console.log('SVG加载成功:', randomTemplate);
                 // 先填充整个canvas为白色
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, 600, 888);
@@ -944,16 +958,18 @@
                 }
             };
             
+            svgImg.onerror = function() {
+                console.error('SVG加载失败:', randomTemplate);
+                // 如果SVG加载失败，直接显示结果（即使没有图片）
+                generatedImage = canvas.toDataURL('image/png', 1.0);
+                showResult();
+            };
             svgImg.src = randomTemplate;
         }
 
         // 显示结果
         function showResult() {
-            // 检查是否有生成的结果图片
-            if (!generatedImage) {
-                console.log('还没有生成图片，等待中...');
-                return;
-            }
+            console.log('显示结果，generatedImage:', generatedImage ? '已生成' : '未生成');
             
             // 隐藏等待环节
             document.getElementById('waitingSection').classList.remove('show');
@@ -961,7 +977,14 @@
             
             // 显示结果
             document.getElementById('resultSection').classList.add('show');
-            document.getElementById('resultImage').src = generatedImage;
+            
+            if (generatedImage) {
+                document.getElementById('resultImage').src = generatedImage;
+            } else {
+                console.error('没有生成的图片，显示错误信息');
+                document.getElementById('resultImage').style.display = 'none';
+                // 可以在这里添加错误提示
+            }
         }
 
         // 下载图片
