@@ -975,15 +975,25 @@
             document.getElementById('waitingSection').classList.remove('show');
             document.getElementById('waitingSection').classList.add('hidden');
             
-            // 显示结果
-            document.getElementById('resultSection').classList.add('show');
-            
             if (generatedImage) {
+                // 有图片时显示结果页面
+                document.getElementById('resultSection').classList.add('show');
                 document.getElementById('resultImage').src = generatedImage;
             } else {
-                console.error('没有生成的图片，显示错误信息');
-                document.getElementById('resultImage').style.display = 'none';
-                // 可以在这里添加错误提示
+                // 没有图片时，重新显示开始页面
+                console.error('没有生成的图片，返回开始页面');
+                
+                // 隐藏所有其他页面
+                document.getElementById('guideSection').classList.remove('show');
+                document.getElementById('waitingSection').classList.remove('show');
+                document.getElementById('resultSection').classList.remove('show');
+                
+                // 显示开始页面
+                document.getElementById('triggerSection').classList.add('show');
+                document.getElementById('fileInput').value = ''; // 清空文件输入
+                selectedFile = null;
+                generatedImage = null;
+                omikujiResult = null;
             }
         }
 
