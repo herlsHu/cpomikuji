@@ -650,50 +650,68 @@
                 else if (l > 85 && s < 25) {
                     colorName = "白";
                 }
-                // 根据色相和饱和度判断颜色（更精确的阈值）
+                // 根据色相、饱和度和亮度判断颜色（更丰富的分类）
                 else if (h >= 0 && h < 15) {
-                    if (s < 30 && l < 50) colorName = "褐";
-                    else if (s < 40 && l < 60) colorName = "棕";
+                    if (s < 20 && l < 40) colorName = "褐";
+                    else if (s < 30 && l < 50) colorName = "棕";
+                    else if (s < 40 && l < 60) colorName = "栗";
+                    else if (s < 50 && l < 70) colorName = "朱";
                     else colorName = "红";
                 }
                 else if (h >= 15 && h < 35) {
-                    if (s < 35 && l < 55) colorName = "褐";
-                    else if (s < 45 && l < 65) colorName = "棕";
+                    if (s < 25 && l < 45) colorName = "褐";
+                    else if (s < 35 && l < 55) colorName = "棕";
+                    else if (s < 45 && l < 65) colorName = "栗";
+                    else if (s < 55 && l < 75) colorName = "橙";
                     else colorName = "橙";
                 }
                 else if (h >= 35 && h < 65) {
-                    if (s < 30 && l < 50) colorName = "褐";
-                    else if (s < 40 && l < 60) colorName = "棕";
+                    if (s < 20 && l < 40) colorName = "褐";
+                    else if (s < 30 && l < 50) colorName = "棕";
+                    else if (s < 40 && l < 60) colorName = "栗";
+                    else if (s < 50 && l < 70) colorName = "金";
                     else colorName = "黄";
                 }
                 else if (h >= 65 && h < 140) {
-                    if (s < 25 && l < 45) colorName = "褐";
-                    else if (s < 35 && l < 55) colorName = "棕";
+                    if (s < 20 && l < 40) colorName = "褐";
+                    else if (s < 30 && l < 50) colorName = "棕";
+                    else if (s < 40 && l < 60) colorName = "栗";
+                    else if (s < 50 && l < 70) colorName = "翠";
                     else colorName = "绿";
                 }
                 else if (h >= 140 && h < 180) {
-                    if (s < 30 && l < 50) colorName = "褐";
-                    else if (s < 40 && l < 60) colorName = "棕";
+                    if (s < 25 && l < 45) colorName = "褐";
+                    else if (s < 35 && l < 55) colorName = "棕";
+                    else if (s < 45 && l < 65) colorName = "栗";
+                    else if (s < 55 && l < 75) colorName = "青";
                     else colorName = "青";
                 }
                 else if (h >= 180 && h < 240) {
-                    if (s < 25 && l < 45) colorName = "褐";
-                    else if (s < 35 && l < 55) colorName = "棕";
+                    if (s < 20 && l < 40) colorName = "褐";
+                    else if (s < 30 && l < 50) colorName = "棕";
+                    else if (s < 40 && l < 60) colorName = "栗";
+                    else if (s < 50 && l < 70) colorName = "靛";
                     else colorName = "蓝";
                 }
                 else if (h >= 240 && h < 280) {
-                    if (s < 30 && l < 50) colorName = "褐";
-                    else if (s < 40 && l < 60) colorName = "棕";
+                    if (s < 25 && l < 45) colorName = "褐";
+                    else if (s < 35 && l < 55) colorName = "棕";
+                    else if (s < 45 && l < 65) colorName = "栗";
+                    else if (s < 55 && l < 75) colorName = "紫";
                     else colorName = "紫";
                 }
                 else if (h >= 280 && h < 320) {
-                    if (s < 30 && l < 50) colorName = "褐";
-                    else if (s < 40 && l < 60) colorName = "棕";
+                    if (s < 25 && l < 45) colorName = "褐";
+                    else if (s < 35 && l < 55) colorName = "棕";
+                    else if (s < 45 && l < 65) colorName = "栗";
+                    else if (s < 55 && l < 75) colorName = "粉";
                     else colorName = "粉";
                 }
                 else {
-                    if (s < 30 && l < 50) colorName = "褐";
-                    else if (s < 40 && l < 60) colorName = "棕";
+                    if (s < 20 && l < 40) colorName = "褐";
+                    else if (s < 30 && l < 50) colorName = "棕";
+                    else if (s < 40 && l < 60) colorName = "栗";
+                    else if (s < 50 && l < 70) colorName = "朱";
                     else colorName = "红"; // 320-360度回到红色
                 }
                 
@@ -713,7 +731,7 @@
             // 如果采样点太少，使用备用方案
             if (maxCount < 15) {
                 console.log('采样点不足，使用随机颜色');
-                const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉","灰","褐","棕"];
+                const colors = ["白","黑","红","橙","黄","绿","青","蓝","紫","粉","灰","褐","棕","栗","朱","金","翠","靛"];
                 return colors[Math.floor(Math.random() * colors.length)];
             }
             
