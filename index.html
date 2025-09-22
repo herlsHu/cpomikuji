@@ -517,24 +517,26 @@
             document.getElementById('guideSection').classList.add('show');
             
             // 2. 依次显示引导内容
+            // b：引导把娃包放在指定位置（4s后出现c）
             setTimeout(() => {
                 document.getElementById('guideItem1').classList.add('show');
             }, 500);
             
+            // c：引导用户站在指定位置（6s后出现d）
             setTimeout(() => {
                 document.getElementById('guideItem2').classList.add('show');
-            }, 5500); // b出现5秒后显示c
+            }, 4500); // b出现4秒后显示c
             
             // 3. 延迟显示等待环节
             setTimeout(() => {
                 document.getElementById('guideSection').classList.remove('show');
                 document.getElementById('waitingSection').classList.add('show');
-            }, 13500); // c出现8秒后显示d
+            }, 10500); // c出现6秒后显示d
             
-            // 4. 分析图片并生成日签（确保等待环节至少保持3秒）
+            // 4. 分析图片并生成日签（确保等待环节至少保持5秒）
             setTimeout(async () => {
                 await analyzeAndGenerate();
-            }, 16500); // 等待环节至少保持3秒（13.5秒 + 3秒 = 16.5秒）
+            }, 15500); // 等待环节至少保持5秒
         }
 
         // 分析图片并生成日签
@@ -819,6 +821,9 @@
         async function generateImage() {
             await loadFonts();
             
+            const startTime = Date.now();
+            const minWaitTime = 5000; // 最小等待5秒
+            
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
@@ -836,8 +841,8 @@
             svgImg.onload = function() {
                 ctx.drawImage(svgImg, 0, 0, 600, 800);
                 
-                // 添加边框颜色填充以适配6英寸相纸
-                ctx.fillStyle = isTemplate1 ? '#FFAA74' : '#E1DDFF'; // 根据模板选择边框颜色
+                // 添加白色填充以适配6英寸相纸
+                ctx.fillStyle = '#FFFFFF'; // 使用白色填充
                 ctx.fillRect(0, 800, 600, 88);
                 
                 // 绘制宜忌内容
@@ -850,26 +855,26 @@
                 
                 const yiPhrases = yiText.split(' ').slice(0, 2);
                 const yiDisplay = yiPhrases.join('  ');
-                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20);
+                ctx.fillText(yiDisplay, 66.75 + 72, 505 + 20 + 88);
                 
                 const jiPhrases = jiText.split(' ').slice(0, 2);
                 const jiDisplay = jiPhrases.join('  ');
-                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20);
+                ctx.fillText(jiDisplay, 266.25 + 72, 505 + 20 + 88);
                 
                 // 绘制幸运信息
                 ctx.font = '16px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
-                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16);
-                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16);
-                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18);
+                ctx.fillText(omikujiResult.lucky_color, 152, 660 + 16 + 88);
+                ctx.fillText(omikujiResult.lucky_item, 152, 687 + 16 + 88);
+                ctx.fillText(omikujiResult.lucky_place, 152, 714 + 18 + 88);
                 
                 // 绘制温馨提醒
                 ctx.font = '20px FZYaSongS-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#000';
-                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20);
+                ctx.fillText(omikujiResult.warm_tip, 74, 597 + 20 + 88);
                 
                 // 绘制签文
                 ctx.font = '24px FZYaSongT-R-GB, "Source Han Serif SC", "思源宋体", "Noto Serif SC", "STSong", "宋体", serif';
@@ -879,7 +884,7 @@
                 const omikujiText = omikujiResult.omikuji_text;
                 const charHeight = 25;
                 const startX = 487 + 10;
-                const startY = 477 + 30;
+                const startY = 477 + 30 + 88;
                 
                 for (let i = 0; i < omikujiText.length; i++) {
                     const char = omikujiText[i];
@@ -892,7 +897,17 @@
                 }
                 
                 generatedImage = canvas.toDataURL('image/png', 1.0);
-                showResult();
+                
+                // 检查是否已经等待了足够的时间
+                const elapsedTime = Date.now() - startTime;
+                if (elapsedTime >= minWaitTime) {
+                    showResult();
+                } else {
+                    // 如果还没到最小等待时间，延迟显示结果
+                    setTimeout(() => {
+                        showResult();
+                    }, minWaitTime - elapsedTime);
+                }
             };
             
             svgImg.src = randomTemplate;
