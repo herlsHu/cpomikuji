@@ -54,8 +54,25 @@
             padding: 20px;
         }
 
+        /* iPad横屏特殊优化 */
+        @media (orientation: landscape) and (min-width: 768px) and (max-width: 1024px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+        }
+
+        /* PC端特殊优化 */
+        @media (min-width: 1024px) {
+            body {
+                padding: 15px;
+                align-items: center;
+            }
+        }
+
         .container {
-            max-width: 500px;
+            max-width: 900px;
             width: 100%;
             background: white;
             border-radius: 20px;
@@ -71,19 +88,19 @@
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 40px;
             font-weight: bold;
             margin-bottom: 10px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            font-size: 16px;
+            font-size: 22px;
             opacity: 0.9;
         }
 
         .content {
-            padding: 40px 30px;
+            padding: 70px 60px;
         }
 
         /* 1. 交互触发环节 */
@@ -116,15 +133,15 @@
         }
 
         .upload-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+            font-size: 56px;
+            margin-bottom: 25px;
             color: #ccc;
         }
 
         .upload-text {
             color: #666;
             margin-bottom: 20px;
-            font-size: 16px;
+            font-size: 22px;
         }
 
         .file-input {
@@ -135,9 +152,9 @@
             background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 22px 45px;
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -179,12 +196,23 @@
         .guide-item {
             background: #f8f9fa;
             border-radius: 12px;
-            padding: 25px;
+            padding: 35px;
             margin-bottom: 20px;
             border-left: 4px solid #ff6b6b;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.5s ease;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .guide-item:last-child {
+            margin-right: 0;
+        }
+
+        .guide-container {
+            display: flex;
+            gap: 25px;
         }
 
         .guide-item.show {
@@ -194,15 +222,15 @@
 
         .guide-item h3 {
             color: #333;
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 12px;
             font-weight: bold;
         }
 
         .guide-item p {
             color: #666;
-            font-size: 16px;
-            line-height: 1.6;
+            font-size: 22px;
+            line-height: 1.7;
         }
 
 
@@ -217,13 +245,13 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #ff6b6b;
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff6b6b;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 25px;
         }
 
         @keyframes spin {
@@ -232,7 +260,7 @@
         }
 
         .waiting-text {
-            font-size: 20px;
+            font-size: 26px;
             color: #333;
             font-weight: bold;
         }
@@ -268,6 +296,199 @@
             display: none !important;
         }
 
+        /* PC端优化 */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1200px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .header {
+                padding: 30px 25px;
+            }
+            
+            .header h1 {
+                font-size: 42px;
+            }
+            
+            .header p {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 50px 40px;
+            }
+            
+            .upload-text {
+                font-size: 24px;
+            }
+            
+            .btn {
+                font-size: 24px;
+                padding: 20px 40px;
+            }
+            
+            .guide-item {
+                padding: 30px;
+                margin-bottom: 0;
+            }
+            
+            .guide-item h3 {
+                font-size: 26px;
+                margin-bottom: 15px;
+            }
+            
+            .guide-item p {
+                font-size: 24px;
+                line-height: 1.6;
+            }
+            
+            .waiting-text {
+                font-size: 28px;
+            }
+            
+            .guide-container {
+                gap: 25px;
+                align-items: stretch;
+                min-height: 180px;
+            }
+            
+            .guide-item {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
+            .upload-icon {
+                font-size: 64px;
+            }
+            
+            .spinner {
+                width: 70px;
+                height: 70px;
+                border-width: 5px;
+            }
+        }
+
+        /* 横屏设备优化 */
+        @media (orientation: landscape) and (min-width: 768px) and (max-width: 1023px) {
+            .container {
+                max-width: 95vw;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+            
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .header h1 {
+                font-size: 38px;
+            }
+            
+            .header p {
+                font-size: 22px;
+            }
+            
+            .content {
+                padding: 40px 30px;
+            }
+            
+            .upload-text {
+                font-size: 22px;
+            }
+            
+            .btn {
+                font-size: 22px;
+                padding: 18px 35px;
+            }
+            
+            .guide-item {
+                padding: 25px;
+                margin-bottom: 0;
+            }
+            
+            .guide-item h3 {
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+            
+            .guide-item p {
+                font-size: 22px;
+                line-height: 1.5;
+            }
+            
+            .waiting-text {
+                font-size: 26px;
+            }
+            
+            .guide-container {
+                gap: 20px;
+                align-items: stretch;
+                min-height: 160px;
+            }
+            
+            .guide-item {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
+            .upload-icon {
+                font-size: 56px;
+            }
+            
+            .spinner {
+                width: 60px;
+                height: 60px;
+                border-width: 4px;
+            }
+        }
+
+        /* iPad横屏特殊优化 */
+        @media (orientation: landscape) and (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                max-width: 98vw;
+                max-height: 98vh;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 36px;
+            }
+            
+            .header p {
+                font-size: 20px;
+            }
+            
+            .content {
+                padding: 35px 25px;
+            }
+            
+            .guide-item {
+                padding: 20px;
+            }
+            
+            .guide-item h3 {
+                font-size: 22px;
+                margin-bottom: 10px;
+            }
+            
+            .guide-item p {
+                font-size: 20px;
+                line-height: 1.4;
+            }
+            
+            .guide-container {
+                gap: 15px;
+                min-height: 140px;
+            }
+        }
+
         /* 响应式设计 */
         @media (max-width: 480px) {
             .container {
@@ -280,11 +501,20 @@
             }
             
             .header h1 {
-                font-size: 24px;
+                font-size: 28px;
             }
             
             .content {
-                padding: 30px 20px;
+                padding: 40px 25px;
+            }
+
+            .guide-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .guide-item {
+                margin-right: 0;
             }
         }
     </style>
@@ -320,16 +550,18 @@
 
             <!-- 2. 交互引导环节 -->
             <div class="guide-section" id="guideSection">
-                <div class="guide-item" id="guideItem1">
-                    <div class="guide-icon">🎒</div>
-                    <h3>放置娃包</h3>
-                    <p>请把娃包放在占卜台正中央圈起的区域</p>
-                </div>
-                
-                <div class="guide-item" id="guideItem2">
-                    <div class="guide-icon">👤</div>
-                    <h3>站立位置</h3>
-                    <p>请后退一步站在指定位置，让谷语娃包能够看到你的今日状态</p>
+                <div class="guide-container">
+                    <div class="guide-item" id="guideItem1">
+                        <div class="guide-icon">🎒</div>
+                        <h3>放置娃包</h3>
+                        <p>请把娃包放在占卜台正中央圈起的区域</p>
+                    </div>
+                    
+                    <div class="guide-item" id="guideItem2">
+                        <div class="guide-icon">👤</div>
+                        <h3>站立位置</h3>
+                        <p>请后退一步站在指定位置，让谷语娃包能够看到你的今日状态</p>
+                    </div>
                 </div>
             </div>
 
@@ -386,7 +618,7 @@
                 "乱扩列","开闪光","挡通道","贴人拍","踩道具",
                 "乱盖章","挡摊位","占机位"
             ],
-            "lucky_items": ["打卡棒","袋子"],
+            "lucky_items": ["打卡棒","吧唧套"],
             "omikuji": [
                 "念念不忘 必有回响",
                 "早到不急 好位自留",
@@ -796,7 +1028,7 @@
                 yi: randomChoices(wordBank.yi, 3),
                 ji: randomChoices(wordBank.ji, 3),
                 lucky_item: randomChoice(wordBank.lucky_items),
-                lucky_place: "CP会场·谷语摊位",
+                lucky_place: "上海·CP30plus会场·谷语摊位",
                 omikuji_text: randomChoice(wordBank.omikuji),
                 warm_tip: randomChoice(wordBank.warm_tips)
             };
@@ -913,8 +1145,8 @@
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
-                ctx.fillText(omikujiResult.lucky_color, 152 * scaleX + offsetX, (660 + 16) * scaleY + offsetY);
-                ctx.fillText(omikujiResult.lucky_item, 152 * scaleX + offsetX, (687 + 16) * scaleY + offsetY);
+                ctx.fillText(omikujiResult.lucky_color, 152 * scaleX + offsetX, (661 + 16) * scaleY + offsetY);
+                ctx.fillText(omikujiResult.lucky_item, 152 * scaleX + offsetX, (688 + 16) * scaleY + offsetY);
                 ctx.fillText(omikujiResult.lucky_place, 152 * scaleX + offsetX, (714 + 18) * scaleY + offsetY);
                 
                 // 绘制温馨提醒
