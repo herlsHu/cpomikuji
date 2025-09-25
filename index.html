@@ -1145,9 +1145,9 @@
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#696969';
                 
-                ctx.fillText(omikujiResult.lucky_color, 152 * scaleX + offsetX, (661 + 16) * scaleY + offsetY);
-                ctx.fillText(omikujiResult.lucky_item, 152 * scaleX + offsetX, (688 + 16) * scaleY + offsetY);
-                ctx.fillText(omikujiResult.lucky_place, 152 * scaleX + offsetX, (714 + 18) * scaleY + offsetY);
+                ctx.fillText(omikujiResult.lucky_color, (152 - 5) * scaleX + offsetX, (661 + 16 + 1) * scaleY + offsetY);
+                ctx.fillText(omikujiResult.lucky_item, (152 - 5) * scaleX + offsetX, (688 + 16 + 1) * scaleY + offsetY);
+                ctx.fillText(omikujiResult.lucky_place, (152 - 5) * scaleX + offsetX, (714 + 18 + 1) * scaleY + offsetY);
                 
                 // 绘制温馨提醒
                 const warmTipFontSize = Math.round(20 * Math.min(scaleX, scaleY));
